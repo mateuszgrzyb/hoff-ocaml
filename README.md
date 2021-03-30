@@ -8,3 +8,7 @@ Using menhir, ocamllex (probably will change into sedlex because of unicode supp
 * fix lambdas
 * update namespace scoping
 * refactor
+* implement strings
+* io
+* clojures
+* operator overloading ???
