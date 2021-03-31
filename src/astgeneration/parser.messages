@@ -1,0 +1,1627 @@
+main: FUN ID LC ID COLON TID COMMA VAL
+##
+## Ends in an error in state: 30.
+##
+## separated_nonempty_list(COMMA,typed_id) -> typed_id COMMA . separated_nonempty_list(COMMA,typed_id) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## typed_id COMMA
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID LC ID COLON TID VAL
+##
+## Ends in an error in state: 29.
+##
+## separated_nonempty_list(COMMA,typed_id) -> typed_id . [ RC ]
+## separated_nonempty_list(COMMA,typed_id) -> typed_id . COMMA separated_nonempty_list(COMMA,typed_id) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## typed_id
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID LC RC COLON TID ASSIGN STRING TID
+##
+## Ends in an error in state: 147.
+##
+## expr -> expr . ADD expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . SUB expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . MUL expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . DIV expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . REM expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . LT expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . LE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . GE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . GT expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . NE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . EQ expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . OP expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## g_decl -> FUN ID typed_id_list COLON type_ ASSIGN expr . [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON type_ ASSIGN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID LC RC COLON TID ASSIGN VAL
+##
+## Ends in an error in state: 146.
+##
+## g_decl -> FUN ID typed_id_list COLON type_ ASSIGN . expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON type_ ASSIGN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID LC RC COLON TID VAL
+##
+## Ends in an error in state: 145.
+##
+## g_decl -> FUN ID typed_id_list COLON type_ . ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON type_
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID LC RC COLON VAL
+##
+## Ends in an error in state: 144.
+##
+## g_decl -> FUN ID typed_id_list COLON . type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID LC RC VAL
+##
+## Ends in an error in state: 143.
+##
+## g_decl -> FUN ID typed_id_list . COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID LC VAL
+##
+## Ends in an error in state: 28.
+##
+## typed_id_list -> LC . loption(separated_nonempty_list(COMMA,typed_id)) RC [ COLON ]
+##
+## The known suffix of the stack is as follows:
+## LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN ID VAL
+##
+## Ends in an error in state: 142.
+##
+## g_decl -> FUN ID . typed_id_list COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON TID ASSIGN STRING TID
+##
+## Ends in an error in state: 141.
+##
+## expr -> expr . ADD expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . SUB expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . MUL expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . DIV expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . REM expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . LT expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . LE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . GE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . GT expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . NE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . EQ expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . OP expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## g_decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr . [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON TID ASSIGN VAL
+##
+## Ends in an error in state: 140.
+##
+## g_decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN . expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON TID VAL
+##
+## Ends in an error in state: 139.
+##
+## g_decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ . ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON VAL
+##
+## Ends in an error in state: 138.
+##
+## g_decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON . type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC VAL
+##
+## Ends in an error in state: 137.
+##
+## g_decl -> FUN LC OP RC LC typed_id COMMA typed_id RC . COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID COMMA ID COLON TID VAL
+##
+## Ends in an error in state: 136.
+##
+## g_decl -> FUN LC OP RC LC typed_id COMMA typed_id . RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID COMMA VAL
+##
+## Ends in an error in state: 135.
+##
+## g_decl -> FUN LC OP RC LC typed_id COMMA . typed_id RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC ID COLON TID VAL
+##
+## Ends in an error in state: 134.
+##
+## g_decl -> FUN LC OP RC LC typed_id . COMMA typed_id RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC LC VAL
+##
+## Ends in an error in state: 133.
+##
+## g_decl -> FUN LC OP RC LC . typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP RC VAL
+##
+## Ends in an error in state: 132.
+##
+## g_decl -> FUN LC OP RC . LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC OP VAL
+##
+## Ends in an error in state: 131.
+##
+## g_decl -> FUN LC OP . RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN LC VAL
+##
+## Ends in an error in state: 130.
+##
+## g_decl -> FUN LC . OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: FUN VAL
+##
+## Ends in an error in state: 129.
+##
+## g_decl -> FUN . ID typed_id_list COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+## g_decl -> FUN . LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## FUN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TID
+##
+## Ends in an error in state: 0.
+##
+## main' -> . main [ # ]
+##
+## The known suffix of the stack is as follows:
+##
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID ASSIGN TID TID
+##
+## Ends in an error in state: 151.
+##
+## list(g_decl) -> g_decl . list(g_decl) [ EOF ]
+##
+## The known suffix of the stack is as follows:
+## g_decl
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID ASSIGN VAL
+##
+## Ends in an error in state: 126.
+##
+## user_type -> ASSIGN . type_ [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## ASSIGN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID BAR THEN
+##
+## Ends in an error in state: 112.
+##
+## user_type -> BAR . loption(separated_nonempty_list(BAR,prod_type)) [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## BAR
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID BAR TID BAR VAL
+##
+## Ends in an error in state: 123.
+##
+## separated_nonempty_list(BAR,prod_type) -> prod_type BAR . separated_nonempty_list(BAR,prod_type) [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## prod_type BAR
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID BAR TID LC RC TID
+##
+## Ends in an error in state: 122.
+##
+## separated_nonempty_list(BAR,prod_type) -> prod_type . [ VAL TYPE FUN EOF ]
+## separated_nonempty_list(BAR,prod_type) -> prod_type . BAR separated_nonempty_list(BAR,prod_type) [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## prod_type
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID BAR TID LC TID COMMA VAL
+##
+## Ends in an error in state: 116.
+##
+## separated_nonempty_list(COMMA,type_) -> type_ COMMA . separated_nonempty_list(COMMA,type_) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## type_ COMMA
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID BAR TID LC TID VAL
+##
+## Ends in an error in state: 115.
+##
+## separated_nonempty_list(COMMA,type_) -> type_ . [ RC ]
+## separated_nonempty_list(COMMA,type_) -> type_ . COMMA separated_nonempty_list(COMMA,type_) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## type_
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID BAR TID LC VAL
+##
+## Ends in an error in state: 114.
+##
+## prod_type -> TID LC . loption(separated_nonempty_list(COMMA,type_)) RC [ VAL TYPE FUN EOF BAR ]
+##
+## The known suffix of the stack is as follows:
+## TID LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID BAR TID TID
+##
+## Ends in an error in state: 113.
+##
+## prod_type -> TID . [ VAL TYPE FUN EOF BAR ]
+## prod_type -> TID . LC loption(separated_nonempty_list(COMMA,type_)) RC [ VAL TYPE FUN EOF BAR ]
+##
+## The known suffix of the stack is as follows:
+## TID
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE TID VAL
+##
+## Ends in an error in state: 111.
+##
+## g_decl -> TYPE TID . user_type [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## TYPE TID
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: TYPE VAL
+##
+## Ends in an error in state: 110.
+##
+## g_decl -> TYPE . TID user_type [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## TYPE
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON LC TID ARROW VAL
+##
+## Ends in an error in state: 7.
+##
+## separated_nonempty_list(ARROW,type_) -> type_ ARROW . separated_nonempty_list(ARROW,type_) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## type_ ARROW
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON LC TID VAL
+##
+## Ends in an error in state: 6.
+##
+## separated_nonempty_list(ARROW,type_) -> type_ . [ RC ]
+## separated_nonempty_list(ARROW,type_) -> type_ . ARROW separated_nonempty_list(ARROW,type_) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## type_
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON LC VAL
+##
+## Ends in an error in state: 5.
+##
+## type_ -> LC . loption(separated_nonempty_list(ARROW,type_)) RC [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ASSIGN ARROW ADD ]
+##
+## The known suffix of the stack is as follows:
+## LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN FUN LC RC COLON TID ARROW STRING TID
+##
+## Ends in an error in state: 42.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## lit -> FUN typed_id_list COLON type_ ARROW expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN typed_id_list COLON type_ ARROW expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN FUN LC RC COLON TID ARROW VAL
+##
+## Ends in an error in state: 38.
+##
+## lit -> FUN typed_id_list COLON type_ ARROW . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN typed_id_list COLON type_ ARROW
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN FUN LC RC COLON TID VAL
+##
+## Ends in an error in state: 37.
+##
+## lit -> FUN typed_id_list COLON type_ . ARROW expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN typed_id_list COLON type_
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN FUN LC RC COLON VAL
+##
+## Ends in an error in state: 36.
+##
+## lit -> FUN typed_id_list COLON . type_ ARROW expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN typed_id_list COLON
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN FUN LC RC VAL
+##
+## Ends in an error in state: 35.
+##
+## lit -> FUN typed_id_list . COLON type_ ARROW expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN typed_id_list
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN FUN VAL
+##
+## Ends in an error in state: 27.
+##
+## lit -> FUN . typed_id_list COLON type_ ARROW expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN ID LC STRING COMMA VAL
+##
+## Ends in an error in state: 73.
+##
+## separated_nonempty_list(COMMA,expr) -> expr COMMA . separated_nonempty_list(COMMA,expr) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## expr COMMA
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN ID LC STRING VAL
+##
+## Ends in an error in state: 72.
+##
+## expr -> expr . ADD expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV COMMA ADD ]
+## separated_nonempty_list(COMMA,expr) -> expr . [ RC ]
+## separated_nonempty_list(COMMA,expr) -> expr . COMMA separated_nonempty_list(COMMA,expr) [ RC ]
+##
+## The known suffix of the stack is as follows:
+## expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN ID LC VAL
+##
+## Ends in an error in state: 26.
+##
+## expr -> ID LC . loption(separated_nonempty_list(COMMA,expr)) RC [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## ID LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN ID TID
+##
+## Ends in an error in state: 25.
+##
+## expr -> ID . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> ID . LC loption(separated_nonempty_list(COMMA,expr)) RC [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## ID
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN IF STRING THEN STRING ELSE STRING TID
+##
+## Ends in an error in state: 79.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> IF expr THEN expr ELSE expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN expr ELSE expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN IF STRING THEN STRING ELSE VAL
+##
+## Ends in an error in state: 78.
+##
+## expr -> IF expr THEN expr ELSE . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN expr ELSE
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN IF STRING THEN STRING VAL
+##
+## Ends in an error in state: 77.
+##
+## expr -> expr . ADD expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . SUB expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . MUL expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . DIV expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . REM expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . LT expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . LE expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . GE expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . GT expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . NE expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . EQ expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . OP expr [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> expr . CONV type_ [ SUB REM OP NE MUL LT LE GT GE EQ ELSE DIV CONV ADD ]
+## expr -> IF expr THEN expr . ELSE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN IF STRING THEN VAL
+##
+## Ends in an error in state: 76.
+##
+## expr -> IF expr THEN . expr ELSE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN IF STRING VAL
+##
+## Ends in an error in state: 75.
+##
+## expr -> expr . ADD expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . SUB expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . MUL expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . DIV expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . REM expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . LT expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . LE expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . GE expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . GT expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . NE expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . EQ expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . OP expr [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . CONV type_ [ THEN SUB REM OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> IF expr . THEN expr ELSE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN IF VAL
+##
+## Ends in an error in state: 24.
+##
+## expr -> IF . expr THEN expr ELSE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## IF
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LC STRING VAL
+##
+## Ends in an error in state: 80.
+##
+## expr -> expr . ADD expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . SUB expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . MUL expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . DIV expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . REM expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . LT expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . LE expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . GE expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . GT expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . NE expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . EQ expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . OP expr [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> expr . CONV type_ [ SUB REM RC OP NE MUL LT LE GT GE EQ DIV CONV ADD ]
+## expr -> LC expr . RC [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## LC expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LC VAL
+##
+## Ends in an error in state: 22.
+##
+## expr -> LC . expr RC [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN ID LC RC COLON TID ASSIGN STRING TYPE
+##
+## Ends in an error in state: 101.
+##
+## decl -> FUN ID typed_id_list COLON type_ ASSIGN expr . [ VAL IN FUN ]
+## expr -> expr . ADD expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . SUB expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . MUL expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . DIV expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . REM expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . LT expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . LE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . GE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . GT expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . NE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . EQ expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . OP expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . CONV type_ [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON type_ ASSIGN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN ID LC RC COLON TID ASSIGN VAL
+##
+## Ends in an error in state: 100.
+##
+## decl -> FUN ID typed_id_list COLON type_ ASSIGN . expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON type_ ASSIGN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN ID LC RC COLON TID VAL
+##
+## Ends in an error in state: 99.
+##
+## decl -> FUN ID typed_id_list COLON type_ . ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON type_
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN ID LC RC COLON VAL
+##
+## Ends in an error in state: 98.
+##
+## decl -> FUN ID typed_id_list COLON . type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list COLON
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN ID LC RC VAL
+##
+## Ends in an error in state: 97.
+##
+## decl -> FUN ID typed_id_list . COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID typed_id_list
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN ID VAL
+##
+## Ends in an error in state: 96.
+##
+## decl -> FUN ID . typed_id_list COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN ID
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON TID ASSIGN STRING TYPE
+##
+## Ends in an error in state: 95.
+##
+## decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr . [ VAL IN FUN ]
+## expr -> expr . ADD expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . SUB expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . MUL expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . DIV expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . REM expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . LT expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . LE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . GE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . GT expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . NE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . EQ expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . OP expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . CONV type_ [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON TID ASSIGN VAL
+##
+## Ends in an error in state: 94.
+##
+## decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN . expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON TID VAL
+##
+## Ends in an error in state: 93.
+##
+## decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ . ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC COLON VAL
+##
+## Ends in an error in state: 92.
+##
+## decl -> FUN LC OP RC LC typed_id COMMA typed_id RC COLON . type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC COLON
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID COMMA ID COLON TID RC VAL
+##
+## Ends in an error in state: 91.
+##
+## decl -> FUN LC OP RC LC typed_id COMMA typed_id RC . COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id RC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID COMMA ID COLON TID VAL
+##
+## Ends in an error in state: 90.
+##
+## decl -> FUN LC OP RC LC typed_id COMMA typed_id . RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA typed_id
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID COMMA VAL
+##
+## Ends in an error in state: 89.
+##
+## decl -> FUN LC OP RC LC typed_id COMMA . typed_id RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id COMMA
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC ID COLON TID VAL
+##
+## Ends in an error in state: 88.
+##
+## decl -> FUN LC OP RC LC typed_id . COMMA typed_id RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC typed_id
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC LC VAL
+##
+## Ends in an error in state: 87.
+##
+## decl -> FUN LC OP RC LC . typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP RC VAL
+##
+## Ends in an error in state: 86.
+##
+## decl -> FUN LC OP RC . LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP RC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC OP VAL
+##
+## Ends in an error in state: 85.
+##
+## decl -> FUN LC OP . RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC OP
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN LC VAL
+##
+## Ends in an error in state: 84.
+##
+## decl -> FUN LC . OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN LC
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET FUN VAL
+##
+## Ends in an error in state: 83.
+##
+## decl -> FUN . ID typed_id_list COLON type_ ASSIGN expr [ VAL IN FUN ]
+## decl -> FUN . LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## FUN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET IN STRING TID
+##
+## Ends in an error in state: 104.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> LET list(decl) IN expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## LET list(decl) IN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET IN VAL
+##
+## Ends in an error in state: 103.
+##
+## expr -> LET list(decl) IN . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## LET list(decl) IN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET TYPE
+##
+## Ends in an error in state: 18.
+##
+## expr -> LET . list(decl) IN expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## LET
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET VAL ID COLON TID ASSIGN STRING TYPE
+##
+## Ends in an error in state: 82.
+##
+## decl -> VAL typed_id ASSIGN expr . [ VAL IN FUN ]
+## expr -> expr . ADD expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . SUB expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . MUL expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . DIV expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . REM expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . LT expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . LE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . GE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . GT expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . NE expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . EQ expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . OP expr [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+## expr -> expr . CONV type_ [ VAL SUB REM OP NE MUL LT LE IN GT GE FUN EQ DIV CONV ADD ]
+##
+## The known suffix of the stack is as follows:
+## VAL typed_id ASSIGN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET VAL ID COLON TID ASSIGN VAL
+##
+## Ends in an error in state: 21.
+##
+## decl -> VAL typed_id ASSIGN . expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## VAL typed_id ASSIGN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET VAL ID COLON TID VAL
+##
+## Ends in an error in state: 20.
+##
+## decl -> VAL typed_id . ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## VAL typed_id
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN LET VAL VAL
+##
+## Ends in an error in state: 19.
+##
+## decl -> VAL . typed_id ASSIGN expr [ VAL IN FUN ]
+##
+## The known suffix of the stack is as follows:
+## VAL
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN NOT VAL
+##
+## Ends in an error in state: 17.
+##
+## expr -> NOT . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## NOT
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING ADD STRING TID
+##
+## Ends in an error in state: 58.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr ADD expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr ADD expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING ADD VAL
+##
+## Ends in an error in state: 57.
+##
+## expr -> expr ADD . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr ADD
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING CONV VAL
+##
+## Ends in an error in state: 67.
+##
+## expr -> expr CONV . type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr CONV
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING DIV VAL
+##
+## Ends in an error in state: 49.
+##
+## expr -> expr DIV . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr DIV
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING EQ STRING TID
+##
+## Ends in an error in state: 66.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr EQ expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr EQ expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING EQ VAL
+##
+## Ends in an error in state: 65.
+##
+## expr -> expr EQ . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr EQ
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING GE STRING TID
+##
+## Ends in an error in state: 64.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr GE expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr GE expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING GE VAL
+##
+## Ends in an error in state: 63.
+##
+## expr -> expr GE . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr GE
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING GT STRING TID
+##
+## Ends in an error in state: 62.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr GT expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr GT expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING GT VAL
+##
+## Ends in an error in state: 61.
+##
+## expr -> expr GT . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr GT
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING LE STRING TID
+##
+## Ends in an error in state: 60.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr LE expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr LE expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING LE VAL
+##
+## Ends in an error in state: 59.
+##
+## expr -> expr LE . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr LE
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING LT STRING TID
+##
+## Ends in an error in state: 56.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr LT expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr LT expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING LT VAL
+##
+## Ends in an error in state: 55.
+##
+## expr -> expr LT . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr LT
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING MUL VAL
+##
+## Ends in an error in state: 47.
+##
+## expr -> expr MUL . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr MUL
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING NE STRING TID
+##
+## Ends in an error in state: 54.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr NE expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr NE expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING NE VAL
+##
+## Ends in an error in state: 53.
+##
+## expr -> expr NE . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr NE
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING OP STRING TID
+##
+## Ends in an error in state: 52.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr OP expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr OP expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING OP VAL
+##
+## Ends in an error in state: 51.
+##
+## expr -> expr OP . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr OP
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING REM VAL
+##
+## Ends in an error in state: 45.
+##
+## expr -> expr REM . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr REM
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING SUB STRING TID
+##
+## Ends in an error in state: 44.
+##
+## expr -> expr . ADD expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . SUB expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr SUB expr . [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . MUL expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . DIV expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . REM expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . LE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . GT expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . NE expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . EQ expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . OP expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr SUB expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING SUB VAL
+##
+## Ends in an error in state: 43.
+##
+## expr -> expr SUB . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## expr SUB
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN STRING TID
+##
+## Ends in an error in state: 109.
+##
+## expr -> expr . ADD expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . SUB expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . MUL expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . DIV expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . REM expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . LT expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . LE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . GE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . GT expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . NE expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . EQ expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . OP expr [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## expr -> expr . CONV type_ [ VAL TYPE SUB REM OP NE MUL LT LE GT GE FUN EQ EOF DIV CONV ADD ]
+## g_decl -> VAL typed_id ASSIGN expr . [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## VAL typed_id ASSIGN expr
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN SUB VAL
+##
+## Ends in an error in state: 15.
+##
+## expr -> SUB . expr [ VAL TYPE THEN SUB REM RC OP NE MUL LT LE IN GT GE FUN EQ EOF ELSE DIV CONV COMMA ADD ]
+##
+## The known suffix of the stack is as follows:
+## SUB
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID ASSIGN VAL
+##
+## Ends in an error in state: 14.
+##
+## g_decl -> VAL typed_id ASSIGN . expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## VAL typed_id ASSIGN
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON TID VAL
+##
+## Ends in an error in state: 13.
+##
+## g_decl -> VAL typed_id . ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## VAL typed_id
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID COLON VAL
+##
+## Ends in an error in state: 3.
+##
+## typed_id -> ID COLON . type_ [ RC COMMA ASSIGN ]
+##
+## The known suffix of the stack is as follows:
+## ID COLON
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL ID VAL
+##
+## Ends in an error in state: 2.
+##
+## typed_id -> ID . COLON type_ [ RC COMMA ASSIGN ]
+##
+## The known suffix of the stack is as follows:
+## ID
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+main: VAL VAL
+##
+## Ends in an error in state: 1.
+##
+## g_decl -> VAL . typed_id ASSIGN expr [ VAL TYPE FUN EOF ]
+##
+## The known suffix of the stack is as follows:
+## VAL
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+

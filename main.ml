@@ -21,7 +21,10 @@ and compile ?(debug = false) () =
   let file = Core.In_channel.create "./misc/test.hff" in
   let filebuf = Lexing.from_channel file in
   try
+    (*
     let ast = Parser.main Lexer.token filebuf in
+    *)
+    let ast = Parserengine.main filebuf in
     if debug then (print_ast ast; ignore (Parsing.set_trace false));
     Typecheck.typecheck ast;
     print_endline (Codegen.generate "test" ast)

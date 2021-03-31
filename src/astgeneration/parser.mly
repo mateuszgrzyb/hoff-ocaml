@@ -2,15 +2,16 @@
 %{
   open Ast
 
-  let rec list_last (l: 'a list): 'a = match l with
-    | [] -> failwith "Empty list"
-    | x :: [] -> x
-    | _ :: xs -> list_last xs
-
   let rec list_init (l: 'a list): 'a list = match l with
-    | [] -> failwith "Empty list"
-    | _ :: [] -> []
-    | x :: xs -> x :: (list_init xs)
+  | [] -> failwith "ListInitError"
+  | _ :: [] -> []
+  | x :: xs -> x :: (list_init xs)
+
+  let rec list_last (l: 'a list): 'a = match l with
+  | [] -> failwith "ListInitError"
+  | x :: [] -> x
+  | _ :: xs -> list_last xs
+
 
   let op_name (op: string): string = 
     "HOFF_OVERLOADED_OPERATOR_" ^ op
@@ -25,20 +26,20 @@
 %token <float> FLOAT
 %token <string> STRING
 
-%token LC COMMA ARROW RC
-%token ASSIGN COLON
+%token LC "(" COMMA "," ARROW "->" RC ")"
+%token ASSIGN "=" COLON ":"
 
-%token FUN VAL
-%token IF THEN ELSE
-%token LET IN
-%token CASE
-%token TYPE BAR
-%token CONV
+%token FUN "fun" VAL "val"
+%token IF "if" THEN "then" ELSE "else"
+%token LET "let" IN "in"
+%token CASE "case"
+%token TYPE "type" BAR "|"
+%token CONV "::"
 
-%token ADD SUB MUL DIV REM
-%token AND OR EQ NE 
-%token LT LE GE GT
-%token NOT
+%token ADD "+" SUB "-" MUL "*" DIV "/" REM "%"
+%token AND "&&" OR "||" EQ "==" NE "!="
+%token LT "<" LE "<=" GE ">=" GT ">"
+%token NOT "!"
 
 %token <string> OP
 
@@ -66,35 +67,32 @@ main: list(g_decl) EOF { $1 }
 // g_decl_t
 
 g_decl:
-  | FUN ID typed_id_list COLON type_ ASSIGN expr { GFunDecl ($2, $3, $5, $7) }
-  | FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr { GFunDecl (op_name $3, [$6;$8], $11, $13) }
-  | VAL typed_id ASSIGN expr { GValDecl ($2, $4) }
-  | TYPE TID user_type { GTypeDecl ($2, $3) }
-//| error %prec ERROR { raise (ParseError "g_decl") }
+  | "fun" ID typed_id_list ":" type_ "=" expr { GFunDecl ($2, $3, $5, $7) }
+  //| FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr { GFunDecl (op_name $3, [$6;$8], $11, $13) }
+  | "fun" "(" OP ")" "(" typed_id "," typed_id ")" ":" type_ "=" expr { GFunDecl (op_name $3, [$6;$8], $11, $13) }
+  //| VAL typed_id ASSIGN expr { GValDecl ($2, $4) }
+  | "val" typed_id "=" expr { GValDecl ($2, $4) }
+  //| TYPE TID user_type { GTypeDecl ($2, $3) }
+  | "type" TID user_type { GTypeDecl ($2, $3) }
 
 
 typed_id_list: 
-  | LC separated_list(COMMA, typed_id) RC { $2 }
-//| error %prec ERROR { raise (ParseError "typed_id_list") }
+  | "(" separated_list(",", typed_id) ")" { $2 }
 
 typed_id: 
-  | ID COLON type_ { ($1, $3) }
-//| error %prec ERROR { raise (ParseError "typed_id") }
+  | ID ":" type_ { ($1, $3) }
 
 type_:
   | TID { string_to_type $1 }
-  | LC separated_list(ARROW, type_) RC { FunT (list_init $2, list_last $2) }
-//| error %prec ERROR { raise (ParseError "type") }
+  | "(" separated_list("->", type_) ")" { FunT (list_init $2, list_last $2) }
 
 user_type:
-  | ASSIGN type_ { Alias ($2) }
-  | BAR separated_list(BAR, prod_type) { Sum ($2) }
-//| error %prec ERROR { raise (ParseError "user_type") }
+  | "=" type_ { Alias ($2) }
+  | "|" separated_list("|", prod_type) { Sum ($2) }
 
 prod_type:
   | TID { Empty ($1) }
   | TID LC separated_list(COMMA, type_) RC { Product ($1, $3) }
-//| error %prec ERROR { raise (ParseError "prod_type") }
 
 
 /* expr_t */
@@ -124,12 +122,10 @@ expr:
 
   | IF expr THEN expr ELSE expr %prec IFTHENELSE { If ($2, $4, $6) }
   | LET list(decl) IN expr %prec LETIN           { Let ($2, $4) }
-//| CASE BAR separated_list(BAR, pattern) { Case ($3) }
 
   | lit { Lit ($1) }
   | ID  { Val ($1) }
   | ID LC separated_list(COMMA, expr) RC { Fun ($1, $3) }
-//| error %prec ERROR { raise (ParseError "expr") }
 
 
 
@@ -139,7 +135,6 @@ decl:
   | FUN ID typed_id_list COLON type_ ASSIGN expr { FunDecl ($2, $3, $5, $7) }
   | FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr { FunDecl (op_name $3, [$6;$8], $11, $13) }
   | VAL typed_id ASSIGN expr { ValDecl ($2, $4) }
-//| error %prec ERROR { raise (ParseError "g_decl") }
 
 /* lit_t */
 
@@ -149,8 +144,3 @@ lit:
   | FLOAT  { Float ($1) }
   | STRING { String ($1) }
   | FUN typed_id_list COLON type_ ARROW expr %prec LAMBDA { Lambda ($2, $4, $6) }
-//| error %prec ERROR { raise (ParseError "lit") }
-
-//pattern:
-//  | ID ARROW expr { (AnyPat ($1), $3) }
-//  | TID LC separated_list(COMMA, ID) RC ARROW expr { (TypePat ($1, $3), $6) }

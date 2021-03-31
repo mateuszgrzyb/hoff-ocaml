@@ -1,12 +1,12 @@
 
 {
   open Lexing
-  open Parser
   open Errors
+  open Parser
 }
 
-let white = [' ' '\t']+
-let newline = ('\r' | '\n' | "\r\n")+
+let white = [' ' '\t']
+let newline = '\r' | '\n' | "\r\n"
 let comment = '#'
 
 let op = ['!' '@' '$' '%' '^' '&' '*' '-' '+' '>' '<' '=' ':' '|' '?' '.']+

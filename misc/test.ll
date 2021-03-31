@@ -91,5 +91,11 @@ entry:
   ret i16 %addexpr1
 }
 
+define float @"HOFF_OVERLOADED_OPERATOR_=>"(float %f, float %g) {
+entry:
+  %addexpr = fadd float %f, %g
+  ret float %addexpr
+}
+
 attributes #0 = { alwaysinline }
 

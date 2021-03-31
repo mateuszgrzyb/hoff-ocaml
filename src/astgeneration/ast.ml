@@ -12,16 +12,10 @@ and expr_t =
   | ConvOp of expr_t * type_t
   | If of expr_t * expr_t * expr_t
   | Let of (decl_t list) * expr_t
-(*| Case of ((pattern_t * expr_t) list)*)
   | Lit of lit_t
   | Val of string
   | Fun of string * (expr_t list)
   [@@deriving show]
-
-and pattern_t = 
-  | TypePat of id_t * (id_t list)
-  | LitPat of lit_t
-  | AnyPat of id_t
 
 and decl_t = 
   | FunDecl of id_t * (typed_id_t list) * type_t * expr_t

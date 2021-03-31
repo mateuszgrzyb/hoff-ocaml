@@ -1,7 +1,10 @@
-
 val globalVal0: Int = 33
 val globalVal1: Int = something(32) / 33
 val globalVal2: Int = globalVal1 - 2
+
+type List
+    | Nill
+    | Cons (Int, List)
 
 fun fibonacci(i: Int): Int =
     if i < 2 
@@ -24,5 +27,8 @@ fun something(i: Int): Int = i + 32
 
 fun (***) (i: Int, j: Int): Int = 
     i + j + globalVal0
+
+fun (=>) (f: Float, g: Float): Float = 
+    f + g
 
 
