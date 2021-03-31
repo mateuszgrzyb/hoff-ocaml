@@ -1,5 +1,5 @@
 
-
+val globalVal0: Int = 33
 val globalVal1: Int = something(32) / 33
 val globalVal2: Int = globalVal1 - 2
 
@@ -22,7 +22,7 @@ fun f2(i: Int, j: Int): Int =
 
 fun something(i: Int): Int = i + 32
 
-fun (***)(i: Int, j: Int): Int = 
-    i + j
+fun (***) (i: Int, j: Int): Int = 
+    i + j + globalVal0
 
 

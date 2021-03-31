@@ -89,7 +89,9 @@ let generate (name: string) (ds: g_decl_t list) =
     f
 
   and generate_g_decl = function 
-    | GValDecl ((name, type_), expr) -> generate_g_valdecl name type_ expr
+    | GValDecl ((name, type_), expr) -> (match expr with
+      | Lit _ -> ()
+      | _ -> generate_g_valdecl name type_ expr)
     | GFunDecl (name, args, return, body) -> generate_g_fundecl name args return body
     | GTypeDecl (name, type_) -> generate_g_typedecl name type_
 
@@ -222,9 +224,11 @@ let generate (name: string) (ds: g_decl_t list) =
     generate_generic_fundecl (lambda_name#generate) args result body
 
   and generate_val name = 
-    match (Llvm.lookup_function (global_name ^ name) module_) with
-    | Some g -> Llvm.build_call g [||] "globalvalue" builder
-    | None -> Hashtbl.find local_values name
+    match (Llvm.lookup_global name module_) with
+    | Some g -> Llvm.build_load g "globalvalue" builder
+    | None -> (match (Llvm.lookup_function (global_name ^ name) module_) with
+      | Some g -> Llvm.build_call g [||] "globalvalue" builder
+      | None -> Hashtbl.find local_values name)
     (*
     match (Llvm.lookup_global name module_) with
     | Some g -> g 
@@ -251,7 +255,9 @@ let generate (name: string) (ds: g_decl_t list) =
 
   and global_predeclare (d: g_decl_t): unit = match d with
     | GFunDecl (id, ts, rt, _) -> ignore (generate_generic_funpredecl id ts rt)
-    | GValDecl ((id, t), _) -> ignore (generate_generic_valpredecl id t)
+    | GValDecl ((id, t), e) -> (match e with
+        | Lit lit -> ignore (Llvm.define_global id (generate_lit lit) module_)
+        | _ -> ignore (generate_generic_valpredecl id t))
     | _ -> ()
     (*
     | GTypeDecl (_, _) -> ()
@@ -278,8 +284,12 @@ let generate (name: string) (ds: g_decl_t list) =
 
   List.iter global_predeclare ds;
   List.iter generate_g_decl ds;
+  (*
   match Llvm_analysis.verify_module module_ with
   | None -> Llvm.string_of_llmodule module_
   | Some error -> error
+  *)
   
-  (*Llvm.string_of_llmodule module_*)
+  (*
+  *)
+  Llvm.string_of_llmodule module_

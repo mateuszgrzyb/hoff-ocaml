@@ -2,6 +2,8 @@
 source_filename = "test"
 target triple = "x86_64-pc-linux-gnu"
 
+@globalVal0 = global i16 33
+
 declare i16 @read_int()
 
 declare i1 @read_bool()
@@ -55,8 +57,9 @@ define i16 @main() {
 entry:
   %callexpr = call i16 @read_int()
   %callexpr1 = call i16 @something(i16 %callexpr)
-  %callexpr2 = call i16 @print_int(i16 %callexpr1)
-  ret i16 %callexpr2
+  %callexpr2 = call i16 @"HOFF_OVERLOADED_OPERATOR_***"(i16 %callexpr1, i16 3)
+  %callexpr3 = call i16 @print_int(i16 %callexpr2)
+  ret i16 %callexpr3
 }
 
 define i16 @f1(i16 %i) {
@@ -78,6 +81,14 @@ define i16 @something(i16 %i) {
 entry:
   %addexpr = add i16 %i, 32
   ret i16 %addexpr
+}
+
+define i16 @"HOFF_OVERLOADED_OPERATOR_***"(i16 %i, i16 %j) {
+entry:
+  %addexpr = add i16 %i, %j
+  %globalvalue = load i16, i16* @globalVal0, align 2
+  %addexpr1 = add i16 %addexpr, %globalvalue
+  ret i16 %addexpr1
 }
 
 attributes #0 = { alwaysinline }
