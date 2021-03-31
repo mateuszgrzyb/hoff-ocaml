@@ -12,3 +12,5 @@ Using menhir, ocamllex (probably will change into sedlex because of unicode supp
 * io
 * clojures
 * operator overloading ???
+* global values declared as functions because global initializers must be constant values. find better solution or add optimizer just for literal values
+* integer overflow

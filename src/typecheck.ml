@@ -2,15 +2,24 @@
 open Ast
 open Errors
 
-let typecheck (ds: g_decl_t list): bool =
+let typecheck (ds: g_decl_t list): unit =
   let vals: (id_t, type_t) Hashtbl.t = Hashtbl.create 10 in
   let funs: (id_t, fun_t) Hashtbl.t = Hashtbl.create 10 in
   let types: (id_t, type_t) Hashtbl.t = Hashtbl.create 10 in
 
+
+  Hashtbl.add funs "read_int"   ([], IntT);
+  Hashtbl.add funs "read_bool"  ([], BoolT);
+  Hashtbl.add funs "read_float" ([], FloatT);
+
+  Hashtbl.add funs "print_int"   ([IntT], IntT);
+  Hashtbl.add funs "print_bool"  ([BoolT], IntT);
+  Hashtbl.add funs "print_float" ([FloatT], IntT);
+
   (* type checker for global declarations *)
   let rec check_gdecl (d: g_decl_t): unit = match d with 
     | GFunDecl (id, ts, rt, e) -> check_fundecl id ts rt e
-    | GValDecl ((id, t), e) -> check_valdecl id t e
+    | GValDecl ((id, t), e) -> check_valdecl id t e; add_val_to_namespace id t
     | GTypeDecl _ -> ()
   
   (* type checker for local declarations *)
@@ -147,8 +156,11 @@ let typecheck (ds: g_decl_t list): bool =
   (* function that populates namespaces with globals before any type and name checking starts *)
   and global_predeclare (d: g_decl_t): unit = match d with
     | GFunDecl (id, ts, rt, _) -> add_fun_to_namespace id ts rt 
+    | _ -> ()
+    (*
     | GValDecl ((id, t), _) -> add_val_to_namespace id t
     | GTypeDecl (id, t) -> add_type_to_namespace id t
+    *)
 
   (* function that populates namespaces with locals before any type and name checking starts *)
   and predeclare (d: decl_t): unit = match d with
@@ -169,8 +181,6 @@ let typecheck (ds: g_decl_t list): bool =
   and add_fun_to_namespace (id: id_t) (ts: typed_id_t list) (rt: type_t): unit =
     add_generic_to_namespace id funs (ts, rt) "Function"
   
-  and add_val_to_namespace (id: id_t) (t: type_t): unit =
-    add_generic_to_namespace id vals t "Value"
   
   and add_alias_to_namespace (id: id_t) (t: type_t): unit =
     add_generic_to_namespace id types t "Type"
@@ -186,6 +196,7 @@ let typecheck (ds: g_decl_t list): bool =
       then raise (NameError ("Value "^id^" already exists"))
       else Hashtbl.add vals id t
 
+  (*
   and add_alias_to_namespace (id: id_t) (t: type_t): unit =
     if Option.is_some (Hashtbl.find_opt types id)
       then raise (NameError ("Type "^id^" already exists"))
@@ -197,6 +208,7 @@ let typecheck (ds: g_decl_t list): bool =
     | Sum (prods) -> add_adt_to_namespace id prods
 
   and add_adt_to_namespace (_: id_t) (_: prod_t list): unit = ()
+  *)
 
 
   and add_fun_arg_to_namespace (arg: id_t * type_t): unit = 
@@ -225,10 +237,13 @@ let typecheck (ds: g_decl_t list): bool =
   in
   (* body *)
 
+  (*
   try
-    List.iter global_predeclare ds;
-    List.iter check_gdecl ds; 
-    true
   with 
   | TypeError e -> print_endline ("TYPE ERROR: " ^ e); false
   | NameError e -> print_endline ("NAME ERROR: " ^ e); false
+  *)
+
+
+  List.iter global_predeclare ds;
+  List.iter check_gdecl ds

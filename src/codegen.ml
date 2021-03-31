@@ -8,27 +8,52 @@ let generate (name: string) (ds: g_decl_t list) =
   let context = Llvm.global_context () in
   let module_ = Llvm.create_module context name in
   let builder = Llvm.builder context in 
-  
+
+
+  let inline_attr = Llvm.create_enum_attr context "alwaysinline" 0L in
+ 
+  (*let unit_t = Llvm.void_type context in*)
   let int_t = Llvm.i16_type context in
   let bool_t = Llvm.i1_type context in
   let float_t = Llvm.float_type context in
-  let function_t (ts: Llvm.lltype list) (rt: Llvm.lltype): Llvm.lltype =
-    Llvm.function_type rt (Array.of_list ts) in
-  
-  let local_variables = Hashtbl.create 10 in 
+  let string_t = Llvm.pointer_type (Llvm.i8_type context) in
+  let function_t (ts: Llvm.lltype list) (rt: Llvm.lltype): Llvm.lltype = Llvm.function_type rt (Array.of_list ts) in
+
   let local_functions = Hashtbl.create 10 in 
-  let lambda_name = new fun_name "HOFF_LAMBDA" in
-  let local_name = new fun_name "HOFF_LOCAL" in 
-  (*val expr_name = new fun_name "HOFF_EXPR"*)
+  let local_values =    Hashtbl.create 10 in 
+  (*
+  let global_values =   Hashtbl.create 10 in
+  *)
+
+  let lambda_name = new fun_name "HOFF_LAMBDA_" in
+  let local_name = new fun_name "HOFF_LOCAL_" in 
+  let global_name = "HOFF_GLOBAL_" in
+  
   let rec get_llvm_t (t: type_t): Llvm.lltype = match t with
     | IntT ->          int_t
     | BoolT ->         bool_t
     | FloatT ->        float_t
-    | StringT ->       failwith "StringT Not Implemented"
+    | StringT ->       string_t
     | FunT (ts, rt) -> function_t (List.map get_llvm_t ts) (get_llvm_t rt)
     | UserT _ ->       failwith "UserT Not Implemented"
 
+  and generate_generic_funpredecl (name: id_t) (args: typed_id_t list) (result: type_t) =
+    (* convert function types to first class function pointers *)
+    let arg_types = Array.of_list (List.map (fun (_, t) -> 
+      match t with
+      | FunT _ -> Llvm.pointer_type (get_llvm_t t)
+      | _ -> get_llvm_t t
+    ) args) in
+
+    let f_t = Llvm.function_type (get_llvm_t result) arg_types in
+    Llvm.declare_function name f_t module_ 
+
+  and generate_generic_valpredecl (name: id_t) (type_: type_t) =
+    let f = generate_generic_funpredecl (global_name ^ name) [] type_ in
+    Llvm.add_function_attr f inline_attr Llvm.AttrIndex.Function
+  
   and generate_generic_fundecl (name: id_t) (args: typed_id_t list) (result: type_t) (body: expr_t) =
+    (* convert function types to first class function pointers *)
     let arg_types = Array.of_list (List.map (fun (_, t) -> 
       match t with
       | FunT _ -> Llvm.pointer_type (get_llvm_t t)
@@ -47,7 +72,7 @@ let generate (name: string) (ds: g_decl_t list) =
       Llvm.set_value_name name arg;
       match type_ with
       | FunT _ -> Hashtbl.add local_functions name arg
-      | _ -> Hashtbl.add local_variables name arg
+      | _ -> Hashtbl.add local_values name arg
     ) (zip args (Array.to_list (Llvm.params f)));
 
     let bb = Llvm.append_block context "entry" f in
@@ -58,7 +83,7 @@ let generate (name: string) (ds: g_decl_t list) =
     
     List.iter (fun (name, type_) -> match type_ with
       | FunT _ -> Hashtbl.remove local_functions name
-      | _ -> Hashtbl.remove local_variables name
+      | _ -> Hashtbl.remove local_values name
     ) args;
 
     f
@@ -68,9 +93,8 @@ let generate (name: string) (ds: g_decl_t list) =
     | GFunDecl (name, args, return, body) -> generate_g_fundecl name args return body
     | GTypeDecl (name, type_) -> generate_g_typedecl name type_
 
-  and generate_g_valdecl name _ expr = 
-    let llvm_expr = generate_expr expr in
-    ignore (Llvm.define_global name llvm_expr module_)
+  and generate_g_valdecl name type_ expr = 
+    ignore (generate_generic_fundecl (global_name ^ name) [] type_ expr)
 
   and generate_g_fundecl name args result body =
     ignore (generate_generic_fundecl name args result body)
@@ -124,20 +148,16 @@ let generate (name: string) (ds: g_decl_t list) =
     
     let let_bb = Llvm.insertion_block builder in
     
-    List.iter (fun decl ->
-      match decl with
-      | ValDecl ((name, _), expr) -> 
-        Hashtbl.add local_variables name (generate_expr expr)
-      | FunDecl (name, args, result, body) -> 
-        Hashtbl.add local_functions name (generate_fundecl args result body)
+    List.iter (fun decl -> match decl with
+      | ValDecl ((name, _), expr) -> Hashtbl.add local_values name (generate_expr expr)
+      | FunDecl (name, args, result, body) -> Hashtbl.add local_functions name (generate_fundecl args result body)
     ) decls;
 
     Llvm.position_at_end let_bb builder;
     let llvm_expr = generate_expr expr in
 
-    List.iter (fun decl ->
-      match decl with
-      | ValDecl ((name, _), _) -> Hashtbl.remove local_variables name
+    List.iter (fun decl -> match decl with
+      | ValDecl ((name, _), _) -> Hashtbl.remove local_values name
       | FunDecl (name, _, _, _) -> Hashtbl.remove local_functions name
     ) decls;
 
@@ -146,7 +166,9 @@ let generate (name: string) (ds: g_decl_t list) =
   and generate_binop lh op rh = 
     let lh_value = generate_expr lh in
     let rh_value = generate_expr rh in
-    
+    let lt = Llvm.type_of lh_value in
+    let rt = Llvm.type_of rh_value in
+
     let generate_int_binop l op r = match op with
     | Add -> Llvm.build_add  l r "addexpr" builder 
     | Sub -> Llvm.build_sub  l r "subexpr" builder
@@ -178,14 +200,15 @@ let generate (name: string) (ds: g_decl_t list) =
     | Ne  -> Llvm.build_fcmp Llvm.Fcmp.One l r "neexpr" builder
     | _ -> failwith "bool binop error" in
 
-    let t = Llvm.type_of lh_value in
-    if t = int_t 
-      then generate_int_binop lh_value op rh_value
-    else if t = bool_t 
-      then generate_bool_binop lh_value op rh_value
-    else if t = float_t
-      then generate_float_binop lh_value op rh_value
-    else failwith "binop type error in llvm"
+    ignore (match Llvm.classify_type lt with
+    | Llvm.TypeKind.Integer -> ()
+    | Llvm.TypeKind.Float -> ()
+    | _ -> () );
+
+    if lt = int_t        then generate_int_binop lh_value op rh_value
+    else if lt = bool_t  then generate_bool_binop lh_value op rh_value
+    else if lt = float_t then generate_float_binop lh_value op rh_value
+    else failwith ("binop type error in llvm: " ^ (Llvm.string_of_lltype lt) ^ " " ^ (Llvm.string_of_lltype rt))
     
   and generate_unop (_: unop_t) (_: expr_t) = failwith "NotImplemented"
   
@@ -199,9 +222,14 @@ let generate (name: string) (ds: g_decl_t list) =
     generate_generic_fundecl (lambda_name#generate) args result body
 
   and generate_val name = 
+    match (Llvm.lookup_function (global_name ^ name) module_) with
+    | Some g -> Llvm.build_call g [||] "globalvalue" builder
+    | None -> Hashtbl.find local_values name
+    (*
     match (Llvm.lookup_global name module_) with
     | Some g -> g 
-    | None -> Hashtbl.find local_variables name
+    | None -> Hashtbl.find local_values name
+    *)
 
   and generate_fun name args =
     let f = match (Llvm.lookup_function name module_) with 
@@ -215,35 +243,43 @@ let generate (name: string) (ds: g_decl_t list) =
     | Int i -> Llvm.const_int (get_llvm_t IntT) i
     | Bool b -> Llvm.const_int (get_llvm_t BoolT) (if b then 1 else 0)
     | Float f -> Llvm.const_float (get_llvm_t IntT) f
-    | String _ -> failwith "NotImplemented"
+    | String s -> Llvm.const_stringz context s
     | Lambda (args, result, body) -> generate_lambda args result body
 
 
   (* misc *)
 
-  (*
   and global_predeclare (d: g_decl_t): unit = match d with
-    | GFunDecl (id, ts, rt, _) -> add_fun_to_namespace id ts rt 
-    | GValDecl ((id, t), _) -> add_val_to_namespace id t
-    | GTypeDecl (id, t) -> add_type_to_namespace id t
+    | GFunDecl (id, ts, rt, _) -> ignore (generate_generic_funpredecl id ts rt)
+    | GValDecl ((id, t), _) -> ignore (generate_generic_valpredecl id t)
+    | _ -> ()
+    (*
+    | GTypeDecl (_, _) -> ()
+    *)
   
+  (*
   and predeclare (d: decl_t): unit = match d with
-    | FunDecl (id, ts, rt, _) -> add_fun_to_namespace id ts rt
-    | ValDecl ((id, t), _) -> add_val_to_namespace id t
+    | FunDecl (id, ts, rt, e) -> Hashtbl.add local_functions id (generate_fundecl ts rt e)
+    | ValDecl ((id, _), e) -> Hashtbl.add local_variables id (generate_expr e)
 
-  (* function that removes names from local scope *)
-  and remove_decl (d: decl_t): unit = match d with
-    | FunDecl (id, _, _, _) -> Hashtbl.remove local_functions id
-    | ValDecl ((id, _), _) -> Hashtbl.remove local_variables id
   *)
+
   in
 
+  ignore (Llvm.declare_function "read_int" (Llvm.function_type int_t [||]) module_);
+  ignore (Llvm.declare_function "read_bool" (Llvm.function_type bool_t [||]) module_);
+  ignore (Llvm.declare_function "read_float" (Llvm.function_type float_t [||]) module_);
 
-  ignore (Llvm.declare_function "print" (Llvm.function_type float_t [|float_t|]) module_);
-  ignore (Llvm.declare_function "read" (Llvm.function_type float_t [||]) module_);
-   
-  (*List.iter global_predeclare ds;*)
+  ignore (Llvm.declare_function "print_int" (Llvm.function_type int_t [|int_t|]) module_);
+  ignore (Llvm.declare_function "print_bool" (Llvm.function_type int_t [|bool_t|]) module_);
+  ignore (Llvm.declare_function "print_float" (Llvm.function_type int_t [|float_t|]) module_);
+
+  Llvm.set_target_triple "x86_64-pc-linux-gnu" module_;
+
+  List.iter global_predeclare ds;
   List.iter generate_g_decl ds;
   match Llvm_analysis.verify_module module_ with
   | None -> Llvm.string_of_llmodule module_
   | Some error -> error
+  
+  (*Llvm.string_of_llmodule module_*)
