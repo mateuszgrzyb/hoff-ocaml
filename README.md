@@ -2,6 +2,9 @@
 
 Using menhir, ocamllex (probably will change into sedlex because of unicode support) and llvm
 
+## Example
+Example syntax is shown in file "misc/test.hff"
+
 ## Done
 * operator overloading (without setting precedences, for now)
 * let, if expressions
@@ -15,7 +18,7 @@ Using menhir, ocamllex (probably will change into sedlex because of unicode supp
 * adts
 * fix lambdas
 * refactor
-* implement strings
+* strings, arrays, tuples and other composite types
 * io
 * clojures
 * global values declared as functions because global initializers must be constant values. find better solution or add optimizer just for literal values
