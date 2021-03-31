@@ -12,7 +12,7 @@ fun main(): Int =
     let 
         val i: Int = read_int()
     in
-        print_int(something(i))
+        print_int(something(i) *** 3)
 
 fun f1(i: Int): Int = 
     f2(i, i) + globalVal1
@@ -21,4 +21,8 @@ fun f2(i: Int, j: Int): Int =
     i + j + 33
 
 fun something(i: Int): Int = i + 32
+
+fun (***)(i: Int, j: Int): Int = 
+    i + j
+
 

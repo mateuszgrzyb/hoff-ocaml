@@ -11,6 +11,10 @@
     | [] -> failwith "Empty list"
     | _ :: [] -> []
     | x :: xs -> x :: (list_init xs)
+
+  let op_name (op: string): string = 
+    "HOFF_OVERLOADED_OPERATOR_" ^ op
+
 %}
 
 %token <string> ID
@@ -36,22 +40,21 @@
 %token LT LE GE GT
 %token NOT
 
-%token OP1 OP2 OP3 OP4 OP5 OP6 OP7 OP8 OP9
+%token <string> OP
 
 %token EOF
 
 %nonassoc ERROR
 %right IFTHENELSE LETIN LAMBDA
 %left  CONV
-%left  OP1 
-%left  OP2 AND
-%left  OP3 OR
-%left  OP4 EQ NE
-%left  OP5 LT LE GE GT
-%left  OP6 ADD SUB
-%left  OP7 MUL DIV REM
-%right OP8 NOT NEG
-%left  OP9
+%left  OP 
+%left  AND
+%left  OR
+%left  EQ NE
+%left  LT LE GE GT
+%left  ADD SUB
+%left  MUL DIV REM
+%right NOT NEG
 
 %type <Ast.g_decl_t list> main
 %start main
@@ -64,6 +67,7 @@ main: list(g_decl) EOF { $1 }
 
 g_decl:
   | FUN ID typed_id_list COLON type_ ASSIGN expr { GFunDecl ($2, $3, $5, $7) }
+  | FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr { GFunDecl (op_name $3, [$6;$8], $11, $13) }
   | VAL typed_id ASSIGN expr { GValDecl ($2, $4) }
   | TYPE TID user_type { GTypeDecl ($2, $3) }
 //| error %prec ERROR { raise (ParseError "g_decl") }
@@ -109,6 +113,8 @@ expr:
   | expr NE expr { BinOp ($1, Ne, $3) }
   | expr EQ expr { BinOp ($1, Eq, $3) }
 
+  | expr OP expr { Fun (op_name $2, [$1; $3]) }
+
   | expr CONV type_ { ConvOp ($1, $3) }
 
   | LC expr RC { $2 }
@@ -125,10 +131,13 @@ expr:
   | ID LC separated_list(COMMA, expr) RC { Fun ($1, $3) }
 //| error %prec ERROR { raise (ParseError "expr") }
 
+
+
 // decl_t
 
 decl:
   | FUN ID typed_id_list COLON type_ ASSIGN expr { FunDecl ($2, $3, $5, $7) }
+  | FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr { FunDecl (op_name $3, [$6;$8], $11, $13) }
   | VAL typed_id ASSIGN expr { ValDecl ($2, $4) }
 //| error %prec ERROR { raise (ParseError "g_decl") }
 

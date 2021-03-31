@@ -7,5 +7,5 @@
 
 (executable
  (name main)
- (libraries core llvm llvm.analysis)
- (preprocess (pps ppx_deriving.show)))
+ (libraries core llvm llvm.analysis sedlex sedlex.ppx)
+ (preprocess (pps ppx_deriving.show sedlex.ppx)))
