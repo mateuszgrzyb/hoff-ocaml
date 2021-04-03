@@ -127,10 +127,14 @@ let typecheck (ds: g_decl_t list): unit =
     | Float _ -> FloatT
     | String _ -> StringT
     | Lambda (args, rt, e) -> 
+      check_fundecl "LAMBDA FUNCTION" args rt e;
+      FunT (List.map snd args, check_expr e)
+      (*
       let t = check_expr e in
       if eq_types t rt 
         then FunT (List.map snd args, check_expr e)
         else raise (TypeError ("Lambda types do not match"))
+      *)
 
   (* name checker for value references *)
   and check_val (id: id_t): type_t =

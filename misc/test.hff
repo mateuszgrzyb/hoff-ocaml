@@ -1,34 +1,49 @@
-val globalVal0: Int = 33
-val globalVal1: Int = something(32) / 33
-val globalVal2: Int = globalVal1 - 2
 
-type List
-    | Nill
-    | Cons (Int, List)
+# val globalVal0: Int = 33
+# val globalVal1: Int = something(32) / 33
+# val globalVal2: Int = globalVal1 - 2
+# 
+# type MaybeInt 
+#     | Nothing
+#     | Just (Int)
 
-fun fibonacci(i: Int): Int =
-    if i < 2 
-    then i 
-    else fibonacci(i-1) + fibonacci(i-2)
+# type List
+#     | Nill
+#     | Cons (Int, List)
 
-fun main(): Int = 
-    let 
-        val i: Int = read_int()
+fun mapInt(f: (Int -> Int), i: Int): Int = 
+    f(i)
+
+fun succInt(i: Int): Int = 
+    let
+        fun f(j: Int): Int = j + 1
     in
-        print_int(something(i) *** 3)
+        # mapInt(fun (j: Int): Int = j + 1, i)
+        mapInt(f, i)
 
-fun f1(i: Int): Int = 
-    f2(i, i) + globalVal1
-
-fun f2(i: Int, j: Int): Int =
-    i + j + 33
-
-fun something(i: Int): Int = i + 32
-
-fun (***) (i: Int, j: Int): Int = 
-    i + j + globalVal0
-
-fun (=>) (f: Float, g: Float): Float = 
-    f + g
+# fun fibonacci(i: Int): Int =
+#     if i < 2 
+#     then i 
+#     else fibonacci(i-1) + fibonacci(i-2)
+# 
+# fun main(): Int = 
+#     let 
+#         val i: Int = read_int()
+#     in
+#         print_int(something(i) *** 3)
+# 
+# fun f1(i: Int): Int = 
+#     f2(i, i) + globalVal1
+# 
+# fun f2(i: Int, j: Int): Int =
+#     i + j + 33
+# 
+# fun something(i: Int): Int = i + 32
+# 
+# fun (***) (i: Int, j: Int): Int = 
+#     i + j + globalVal0
+# 
+# fun (=>) (f: Float, g: Float): Float = 
+#     f + g
 
 

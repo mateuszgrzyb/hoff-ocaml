@@ -57,6 +57,6 @@ let main () =
   ignore (time without_preprocess)
 
 let () = main ()
-
 *)
+
 let () = compile ()

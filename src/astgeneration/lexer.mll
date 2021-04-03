@@ -76,7 +76,11 @@ rule token = parse
   | id  { ID (lexeme lexbuf) }
   | tid { TID (lexeme lexbuf) }
 
-  | _   { raise (LexingError (lexeme lexbuf)) }
+  | _   { 
+    let pos = Misc.get_lexing_position lexbuf in
+    let msg = Misc.parse_pos_error pos ("unexpected token \""^(lexeme lexbuf)^"\"") in
+    raise (LexingError msg)
+  }
   | eof { EOF }
 
 and parse_comment = parse

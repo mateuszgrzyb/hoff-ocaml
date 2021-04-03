@@ -37,6 +37,15 @@ let generate (name: string) (ds: g_decl_t list) =
     | FunT (ts, rt) -> function_t (List.map get_llvm_t ts) (get_llvm_t rt)
     | UserT _ ->       failwith "UserT Not Implemented"
 
+  (*
+  and get_type (lt: Llvm.lltype): type_t = 
+    if      lt = int_t    then IntT
+    else if lt = bool_t   then BoolT
+    else if lt = float_t  then FloatT
+    else if lt = string_t then StringT
+    else failwith "Unknown llvm type"
+  *)
+
   and generate_generic_funpredecl (name: id_t) (args: typed_id_t list) (result: type_t) =
     (* convert function types to first class function pointers *)
     let arg_types = Array.of_list (List.map (fun (_, t) -> 
@@ -101,8 +110,25 @@ let generate (name: string) (ds: g_decl_t list) =
   and generate_g_fundecl name args result body =
     ignore (generate_generic_fundecl name args result body)
 
-  and generate_g_typedecl _ _ = 
-    ()
+  and generate_g_typedecl name type_ = 
+    match type_ with
+    | Alias _ -> ()
+    | Sum (prod :: prods) -> 
+      let t = generate_prod prod in
+      ignore (List.map generate_prod prods);
+      let s = Llvm.named_struct_type context name in
+      Llvm.struct_set_body s [|t|] false
+    | Sum [] -> failwith "Sum type error"
+
+  and generate_prod (prod: prod_t) : Llvm.lltype = 
+      let (n, ts) = match prod with
+      | Empty n -> (n, [||])
+      | Product (n, ts) -> (n, Array.of_list (List.map generate_type ts)) in
+      let s = Llvm.named_struct_type context n in
+      Llvm.struct_set_body s ts false;
+      s
+  
+  and generate_type t = get_llvm_t t
 
   and generate_expr = function
     | If (bexpr, expr1, expr2) -> generate_if bexpr expr1 expr2
@@ -202,11 +228,6 @@ let generate (name: string) (ds: g_decl_t list) =
     | Ne  -> Llvm.build_fcmp Llvm.Fcmp.One l r "neexpr" builder
     | _ -> failwith "bool binop error" in
 
-    ignore (match Llvm.classify_type lt with
-    | Llvm.TypeKind.Integer -> ()
-    | Llvm.TypeKind.Float -> ()
-    | _ -> () );
-
     if lt = int_t        then generate_int_binop lh_value op rh_value
     else if lt = bool_t  then generate_bool_binop lh_value op rh_value
     else if lt = float_t then generate_float_binop lh_value op rh_value
@@ -219,9 +240,12 @@ let generate (name: string) (ds: g_decl_t list) =
   and generate_fundecl args result body =
     generate_generic_fundecl (local_name#generate) args result body
   
-  (* not working *)
   and generate_lambda args result body = 
-    generate_generic_fundecl (lambda_name#generate) args result body
+      let bb = Llvm.insertion_block builder in
+      let f = generate_generic_fundecl (lambda_name#generate) args result body in
+      ignore (Llvm.position_at_end bb builder);
+      f
+
 
   and generate_val name = 
     match (Llvm.lookup_global name module_) with
@@ -284,12 +308,11 @@ let generate (name: string) (ds: g_decl_t list) =
 
   List.iter global_predeclare ds;
   List.iter generate_g_decl ds;
+
   (*
   match Llvm_analysis.verify_module module_ with
   | None -> Llvm.string_of_llmodule module_
   | Some error -> error
-  *)
   
-  (*
   *)
   Llvm.string_of_llmodule module_

@@ -92,49 +92,49 @@ user_type:
 
 prod_type:
   | TID { Empty ($1) }
-  | TID LC separated_list(COMMA, type_) RC { Product ($1, $3) }
+  | TID "(" separated_list(",", type_) ")" { Product ($1, $3) }
 
 
 /* expr_t */
 
 expr:
-  | expr ADD expr { BinOp ($1, Add, $3) }
-  | expr SUB expr { BinOp ($1, Sub, $3) }
-  | expr MUL expr { BinOp ($1, Mul, $3) }
-  | expr DIV expr { BinOp ($1, Div, $3) }
-  | expr REM expr { BinOp ($1, Rem, $3) }
+  | expr "+" expr { BinOp ($1, Add, $3) }
+  | expr "-" expr { BinOp ($1, Sub, $3) }
+  | expr "*" expr { BinOp ($1, Mul, $3) }
+  | expr "/" expr { BinOp ($1, Div, $3) }
+  | expr "%" expr { BinOp ($1, Rem, $3) }
 
-  | expr LT expr { BinOp ($1, Lt, $3) }
-  | expr LE expr { BinOp ($1, Le, $3) }
-  | expr GE expr { BinOp ($1, Ge, $3) }
-  | expr GT expr { BinOp ($1, Gt, $3) }
-  | expr NE expr { BinOp ($1, Ne, $3) }
-  | expr EQ expr { BinOp ($1, Eq, $3) }
+  | expr "<"  expr { BinOp ($1, Lt, $3) }
+  | expr "<=" expr { BinOp ($1, Le, $3) }
+  | expr ">=" expr { BinOp ($1, Ge, $3) }
+  | expr ">"  expr { BinOp ($1, Gt, $3) }
+  | expr "!=" expr { BinOp ($1, Ne, $3) }
+  | expr "==" expr { BinOp ($1, Eq, $3) }
 
   | expr OP expr { Fun (op_name $2, [$1; $3]) }
 
   | expr CONV type_ { ConvOp ($1, $3) }
 
-  | LC expr RC { $2 }
+  | "(" expr ")" { $2 }
   
-  | NOT expr           { UnOp (Not, $2) }
-  | SUB expr %prec NEG { UnOp (Neg, $2) }
+  | "!" expr           { UnOp (Not, $2) }
+  | "-" expr %prec NEG { UnOp (Neg, $2) }
 
-  | IF expr THEN expr ELSE expr %prec IFTHENELSE { If ($2, $4, $6) }
-  | LET list(decl) IN expr %prec LETIN           { Let ($2, $4) }
+  | "if" expr "then" expr "else" expr %prec IFTHENELSE { If ($2, $4, $6) }
+  | "let" list(decl) "in" expr %prec LETIN             { Let ($2, $4) }
 
   | lit { Lit ($1) }
   | ID  { Val ($1) }
-  | ID LC separated_list(COMMA, expr) RC { Fun ($1, $3) }
+  | ID "(" separated_list(",", expr) ")" { Fun ($1, $3) }
 
 
 
 // decl_t
 
 decl:
-  | FUN ID typed_id_list COLON type_ ASSIGN expr { FunDecl ($2, $3, $5, $7) }
-  | FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr { FunDecl (op_name $3, [$6;$8], $11, $13) }
-  | VAL typed_id ASSIGN expr { ValDecl ($2, $4) }
+  | "fun" ID typed_id_list ":" type_ "=" expr { FunDecl ($2, $3, $5, $7) }
+  | "fun" "(" OP ")" "(" typed_id "," typed_id ")" ":" type_ "=" expr { FunDecl (op_name $3, [$6;$8], $11, $13) }
+  | "val" typed_id "=" expr { ValDecl ($2, $4) }
 
 /* lit_t */
 
@@ -143,4 +143,4 @@ lit:
   | BOOL   { Bool ($1) }
   | FLOAT  { Float ($1) }
   | STRING { String ($1) }
-  | FUN typed_id_list COLON type_ ARROW expr %prec LAMBDA { Lambda ($2, $4, $6) }
+  | FUN typed_id_list ":" type_ "=" expr %prec LAMBDA { Lambda ($2, $4, $6) }

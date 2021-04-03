@@ -34,10 +34,12 @@ and type_t =
 and user_type_t =
   | Alias of type_t
   | Sum of prod_t list
+  [@@deriving show]
 
 and prod_t = 
   | Empty of id_t
   | Product of id_t * (type_t list)
+  [@@deriving show]
 
 and fun_t = (type_t list) * type_t
   [@@deriving show]
@@ -46,6 +48,7 @@ and id_t = string
   [@@deriving show]
 
 and typed_id_t = (id_t * type_t)
+  [@@deriving show]
 
 and lit_t = 
   | Int of int
