@@ -13,7 +13,7 @@ target triple = "x86_64-pc-linux-gnu"
 @.str.7 = private unnamed_addr constant [5 x i8] c"true\00", align 1
 @.str.8 = private unnamed_addr constant [3 x i8] c"%f\00", align 1
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local i32 @print_int(i32 %0) #0 {
   %2 = alloca i32, align 4
   store i32 %0, i32* %2, align 4
@@ -22,9 +22,9 @@ define dso_local i32 @print_int(i32 %0) #0 {
   ret i32 0
 }
 
-declare dso_local i32 @printf(i8*, ...) #1
+declare i32 @printf(i8*, ...) #1
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local i32 @print_bool(i32 %0) #0 {
   %2 = alloca i32, align 4
   store i32 %0, i32* %2, align 4
@@ -44,7 +44,7 @@ define dso_local i32 @print_bool(i32 %0) #0 {
   ret i32 0
 }
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local i32 @print_float(float %0) #0 {
   %2 = alloca float, align 4
   store float %0, float* %2, align 4
@@ -54,7 +54,7 @@ define dso_local i32 @print_float(float %0) #0 {
   ret i32 0
 }
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local i32 @print_string(i8* %0) #0 {
   %2 = alloca i8*, align 8
   store i8* %0, i8** %2, align 8
@@ -63,7 +63,7 @@ define dso_local i32 @print_string(i8* %0) #0 {
   ret i32 0
 }
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local i32 @read_int() #0 {
   %1 = alloca i32, align 4
   %2 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.5, i64 0, i64 0), i32* %1)
@@ -71,9 +71,9 @@ define dso_local i32 @read_int() #0 {
   ret i32 %3
 }
 
-declare dso_local i32 @__isoc99_scanf(i8*, ...) #1
+declare i32 @__isoc99_scanf(i8*, ...) #1
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local i32 @read_bool() #0 {
   %1 = alloca i32, align 4
   %2 = alloca i8*, align 8
@@ -98,9 +98,9 @@ define dso_local i32 @read_bool() #0 {
 }
 
 ; Function Attrs: nounwind readonly
-declare dso_local i32 @strcmp(i8*, i8*) #2
+declare i32 @strcmp(i8*, i8*) #2
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local float @read_float() #0 {
   %1 = alloca float, align 4
   %2 = call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.8, i64 0, i64 0), float* %1)
@@ -108,7 +108,7 @@ define dso_local float @read_float() #0 {
   ret float %3
 }
 
-; Function Attrs: noinline nounwind optnone uwtable
+; Function Attrs: noinline nounwind optnone sspstrong uwtable
 define dso_local i8* @read_string() #0 {
   %1 = alloca i8*, align 8
   %2 = load i8*, i8** %1, align 8
@@ -117,13 +117,15 @@ define dso_local i8* @read_string() #0 {
   ret i8* %4
 }
 
-attributes #0 = { noinline nounwind optnone uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { noinline nounwind optnone sspstrong uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readonly "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #3 = { nounwind readonly }
 
-!llvm.module.flags = !{!0}
-!llvm.ident = !{!1}
+!llvm.module.flags = !{!0, !1, !2}
+!llvm.ident = !{!3}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{!"Debian clang version 11.0.1-2"}
+!1 = !{i32 7, !"PIC Level", i32 2}
+!2 = !{i32 7, !"PIE Level", i32 2}
+!3 = !{!"clang version 11.1.0"}

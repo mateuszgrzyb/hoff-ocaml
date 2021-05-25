@@ -34,7 +34,7 @@
 %token LET "let" IN "in"
 %token CASE "case"
 %token TYPE "type" BAR "|"
-%token CONV "::"
+%token CONV "::" CHAIN ";;"
 
 %token ADD "+" SUB "-" MUL "*" DIV "/" REM "%"
 %token AND "&&" OR "||" EQ "==" NE "!="
@@ -45,7 +45,9 @@
 
 %token EOF
 
-%nonassoc ERROR
+// %nonassoc ERROR
+%left ARG
+%left CHAIN
 %right IFTHENELSE LETIN LAMBDA
 %left  CONV
 %left  OP 
@@ -113,7 +115,8 @@ expr:
 
   | expr OP expr { Fun (op_name $2, [$1; $3]) }
 
-  | expr CONV type_ { ConvOp ($1, $3) }
+  | expr "::" type_ { ConvOp ($1, $3) }
+  | expr ";;" expr { ChainOp ($1, $3) }
 
   | "(" expr ")" { $2 }
   

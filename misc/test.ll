@@ -14,20 +14,44 @@ declare i16 @print_bool(i1)
 
 declare i16 @print_float(float)
 
-define i16 @mapInt(i16 (i16)* %f, i16 %i) {
+define i16 @something(i16 %a, i16 %b) {
 entry:
-  %callexpr = call i16 %f(i16 %i)
+  %addexpr = add i16 %a, %b
+  ret i16 %addexpr
+}
+
+define i16 @something2(i16 %a, i16 %b) {
+entry:
+  %callexpr = call i16 @HOFF_LOCAL_0(i16 %a, i16 %b)
   ret i16 %callexpr
 }
 
-define i16 @succInt(i16 %i) {
+define i16 @something3(i16 %a, i16 %b, i16 (i16, i16)* %adder) {
 entry:
-  %callexpr = call i16 @mapInt(i16 (i16)* @HOFF_LAMBDA_0, i16 %i)
+  %callexpr = call i16 %adder(i16 %a, i16 %b)
   ret i16 %callexpr
 }
 
-define i16 @HOFF_LAMBDA_0(i16 %j) {
+define i16 @globalAdder(i16 %a, i16 %b) {
 entry:
-  ret i16 2
+  %addexpr = add i16 %a, %b
+  ret i16 %addexpr
+}
+
+define i16 @main() {
+entry:
+  %callexpr = call i16 @something(i16 3, i16 4)
+  %callexpr1 = call i16 @print_int(i16 %callexpr)
+  %callexpr2 = call i16 @something2(i16 3, i16 4)
+  %callexpr3 = call i16 @print_int(i16 %callexpr2)
+  %callexpr4 = call i16 @something3(i16 3, i16 4, i16 (i16, i16)* @globalAdder)
+  %callexpr5 = call i16 @print_int(i16 %callexpr4)
+  ret i16 333
+}
+
+define i16 @HOFF_LOCAL_0(i16 %a1, i16 %b1) {
+entry:
+  %addexpr = add i16 %a1, %b1
+  ret i16 %addexpr
 }
 

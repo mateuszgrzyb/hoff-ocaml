@@ -136,6 +136,7 @@ let generate (name: string) (ds: g_decl_t list) =
     | BinOp (lh, op, rh) ->       generate_binop lh op rh
     | UnOp (op, expr) ->          generate_unop op expr
     | ConvOp (expr, type_) ->     generate_convop expr type_
+    | ChainOp (e1, e2) ->         generate_chainop e1 e2
     | Val (name) ->               generate_val name
     | Fun (name, args) ->         generate_fun name args
     | Lit (lit) ->                generate_lit lit
@@ -236,6 +237,10 @@ let generate (name: string) (ds: g_decl_t list) =
   and generate_unop (_: unop_t) (_: expr_t) = failwith "NotImplemented"
   
   and generate_convop (_: expr_t) (_: type_t) = failwith "NotImplemented"
+
+  and generate_chainop (e1: expr_t) (e2: expr_t) = 
+    ignore (generate_expr e1);
+    generate_expr e2
   
   and generate_fundecl args result body =
     generate_generic_fundecl (local_name#generate) args result body
@@ -252,7 +257,15 @@ let generate (name: string) (ds: g_decl_t list) =
     | Some g -> Llvm.build_load g "globalvalue" builder
     | None -> (match (Llvm.lookup_function (global_name ^ name) module_) with
       | Some g -> Llvm.build_call g [||] "globalvalue" builder
-      | None -> Hashtbl.find local_values name)
+      | None -> 
+        let opt_v = Hashtbl.find_opt local_values name in
+        if Option.is_some opt_v then Option.get opt_v else
+          match (Llvm.lookup_function name module_) with
+          | Some f -> f
+          | None -> (match Hashtbl.find_opt local_functions name with
+            | Some f -> f
+            | None -> (raise Not_found)
+          ))
     (*
     match (Llvm.lookup_global name module_) with
     | Some g -> g 

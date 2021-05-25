@@ -10,6 +10,7 @@ and expr_t =
   | BinOp of expr_t * binop_t * expr_t
   | UnOp of unop_t * expr_t
   | ConvOp of expr_t * type_t
+  | ChainOp of expr_t * expr_t
   | If of expr_t * expr_t * expr_t
   | Let of (decl_t list) * expr_t
   | Lit of lit_t
