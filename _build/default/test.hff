@@ -1,0 +1,3 @@
+
+let ala: Int = 1 + 1
+let bela (a: Int, b: Int): Int = a + b
