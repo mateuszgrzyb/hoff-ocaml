@@ -1,19 +1,43 @@
 type token =
   | INT of (int)
   | FLOAT of (float)
-  | ID of (string)
   | BOOL of (bool)
+  | STRING of (string)
+  | ID of (string)
   | ADD
   | SUB
   | MUL
   | DIV
-  | LET
+  | REM
+  | LT
+  | LE
+  | EQ
+  | NE
+  | GE
+  | GT
+  | AND
+  | OR
+  | NOT
   | COLON
   | ASSIGN
   | LPAREN
   | RPAREN
   | COMMA
   | ARROW
+  | FATARROW
+  | CONST
+  | FUN
+  | TYPE
+  | IF
+  | THEN
+  | ELSE
+  | FI
+  | LET
+  | IN
+  | TEL
+  | CASE
+  | BAR
+  | OF
   | EOF
 
 val module_ :

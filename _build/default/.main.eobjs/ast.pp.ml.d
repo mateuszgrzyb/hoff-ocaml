@@ -1,1 +1,1 @@
-src/ast.pp.ml: Errors List Ppx_deriving_runtime
+src/ast.pp.ml: List Ppx_deriving_runtime

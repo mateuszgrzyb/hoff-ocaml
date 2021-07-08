@@ -1,3 +1,26 @@
 
-let ala: Int = 1 + 1
-let bela (a: Int, b: Int): (Int -> Int) = a + b
+type List 
+  | Nill ()
+  | Cons (Int)
+
+const ala: Int = 
+  1 + 1
+
+const l: List = Nill ()
+
+const alaName: String = 
+  "ala ma kota" 
+
+const something: Int = 
+  case l 
+    of Nill () -> 0
+    of Cons (i) -> i
+
+fun bela(a: Int, b: Int): (Int -> Int -> Int) = 1
+
+const haha: String = 
+  let
+    fun stringer(str: String): String = 
+      str + " ala ma kota"
+  in
+    stringer("hahahah")
