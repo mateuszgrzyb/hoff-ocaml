@@ -30,6 +30,8 @@
 
 %token COLON ASSIGN
 %token LPAREN RPAREN COMMA ARROW FATARROW
+%token LBRACK RBRACK
+%token LCHAIN RCHAIN
 
 %token CONST FUN TYPE
 %token IF THEN ELSE FI
@@ -43,6 +45,9 @@
 %nonassoc CASE
 %nonassoc LETIN
 %nonassoc IFTHENELSE 
+
+%left LCHAIN
+%right RCHAIN
 
 %left OR
 %left AND
@@ -159,6 +164,9 @@ expr:
   | expr NE expr { BinOp ($1, Ne, $3) }
   | expr GE expr { BinOp ($1, Ge, $3) }
   | expr GT expr { BinOp ($1, Gt, $3) }
+  
+  | expr LCHAIN expr { BinOp ($1, LChain, $3) }
+  | expr RCHAIN expr { BinOp ($1, RChain, $3) }
 
   | expr AND expr { BinOp ($1, And, $3) }
   | expr OR expr { BinOp ($1, Or, $3) }

@@ -1,7 +1,7 @@
 
 type List 
   | Nill ()
-  | Cons (Int)
+  | Cons (List, Int)
 
 const ala: Int = 
   1 + 1
@@ -24,3 +24,6 @@ const haha: String =
       str + " ala ma kota"
   in
     stringer("hahahah")
+
+fun hoff(a: Int, b: Int): Int = 
+  fun1 .> fun2 .> fun3 .> fun4

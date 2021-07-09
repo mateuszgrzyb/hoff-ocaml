@@ -56,6 +56,8 @@ and binop_t =
   | Lt | Le | Eq | Ne | Ge | Gt
   (* logical operators *)
   | And | Or
+  (* function composition operators *)
+  | LChain | RChain
   [@@deriving show]
 
 and unop_t = 

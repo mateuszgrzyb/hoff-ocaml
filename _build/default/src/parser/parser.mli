@@ -25,6 +25,10 @@ type token =
   | COMMA
   | ARROW
   | FATARROW
+  | LBRACK
+  | RBRACK
+  | LCHAIN
+  | RCHAIN
   | CONST
   | FUN
   | TYPE

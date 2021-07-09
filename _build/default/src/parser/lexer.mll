@@ -10,7 +10,7 @@ let int = digit+
 let float = (digit+ '.' digit*) | (digit* '.' digit+)
 let bool = "True" | "False"
 
-let id = ['_' 'a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z']*
+let id = ['_' 'a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
 
 rule token = parse 
   | [' ' '\t']+ { token lexbuf }
@@ -36,6 +36,7 @@ rule token = parse
   
   | "->" { ARROW }
   | "=>" { FATARROW }
+  | ".>" { RCHAIN }
 
   | '|' { BAR }
 
@@ -60,9 +61,12 @@ rule token = parse
 
   | '(' { LPAREN }
   | ')' { RPAREN }
+  | '[' { LBRACK }
+  | ']' { RBRACK }
   | ',' { COMMA }
   | ':' { COLON }
   | '=' { ASSIGN }
+  | '.' { LCHAIN }
 
   | int { INT (int_of_string (lexeme lexbuf)) }
   | float { FLOAT (float_of_string (lexeme lexbuf)) }

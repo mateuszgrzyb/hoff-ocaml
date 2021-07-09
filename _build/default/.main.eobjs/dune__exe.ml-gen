@@ -2,17 +2,45 @@
 module Ast = Dune__exe__Ast
 
 
+(** @canonical Dune__exe.Decl *)
+module Decl = Dune__exe__Decl
+
+
 (** @canonical Dune__exe.Errors *)
 module Errors = Dune__exe__Errors
+
+
+(** @canonical Dune__exe.Expr *)
+module Expr = Dune__exe__Expr
+
+
+(** @canonical Dune__exe.Gdecl *)
+module Gdecl = Dune__exe__Gdecl
 
 
 (** @canonical Dune__exe.Lexer *)
 module Lexer = Dune__exe__Lexer
 
 
+(** @canonical Dune__exe.Lit *)
+module Lit = Dune__exe__Lit
+
+
 (** @canonical Dune__exe.Main *)
 module Main = Dune__exe__Main
 
 
+(** @canonical Dune__exe.Misc *)
+module Misc = Dune__exe__Misc
+
+
+(** @canonical Dune__exe.Module *)
+module Module = Dune__exe__Module
+
+
 (** @canonical Dune__exe.Parser *)
 module Parser = Dune__exe__Parser
+
+
+(** @canonical Dune__exe.Type *)
+module Type = Dune__exe__Type
