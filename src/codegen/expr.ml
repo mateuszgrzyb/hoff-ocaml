@@ -19,8 +19,43 @@ and _generate_binop (_c: Misc.context_t) (_lh: Ast.expr_t) (_op: Ast.binop_t) (_
 and _generate_unop (_c: Misc.context_t) (_op: Ast.unop_t) (_expr: Ast.expr_t): Misc.tv_t = 
   failwith ""
 
-and _generate_if (_c: Misc.context_t) (_bexpr: Ast.expr_t) (_expr1: Ast.expr_t) (_expr2: Ast.expr_t): Misc.tv_t = 
-  failwith ""
+and _generate_if (c: Misc.context_t) (bexpr: Ast.expr_t) (expr1: Ast.expr_t) (expr2: Ast.expr_t): Misc.tv_t = 
+  let if_bb = Llvm.insertion_block c.b in
+  let f = Llvm.block_parent if_bb in
+  let llvm_bexpr_bool = generate c bexpr in
+  
+  let llvm_then_bb = Llvm.append_block c.c "thenblock" f in
+  Llvm.position_at_end llvm_then_bb c.b;
+  let expr1_tv = generate c expr1 in 
+  let llvm_new_then_bb = Llvm.insertion_block c.b in
+
+  let llvm_else_bb = Llvm.append_block c.c "elseblock" f in
+  Llvm.position_at_end llvm_else_bb c.b;
+  let expr2_tv = generate c expr2 in 
+  let llvm_new_else_bb = Llvm.insertion_block c.b in
+
+  let llvm_fi_bb = Llvm.append_block c.c "fiblock" f in
+  Llvm.position_at_end llvm_fi_bb c.b;
+  let result = [(expr1_tv.v, llvm_new_then_bb); (expr2_tv.v, llvm_new_else_bb)] in
+  let llvm_phi = Llvm.build_phi result "phi" c.b in
+  
+  Llvm.position_at_end if_bb c.b;
+  ignore (Llvm.build_cond_br llvm_bexpr_bool.v llvm_then_bb llvm_else_bb c.b);
+  
+  Llvm.position_at_end llvm_new_then_bb c.b;
+  ignore (Llvm.build_br llvm_fi_bb c.b);
+  Llvm.position_at_end llvm_new_else_bb c.b;
+  ignore (Llvm.build_br llvm_fi_bb c.b);
+
+  Llvm.position_at_end llvm_fi_bb c.b;
+
+  (* typecheck *)
+  if expr1_tv.t <> expr2_tv.t then raise (Errors.TypeError "if");
+
+  { t = expr1_tv.t
+  ; v = llvm_phi
+  }
+
 
 and _generate_let (c: Misc.context_t) (decls: Ast.decl_t list) (expr: Ast.expr_t): Misc.tv_t = 
   let llvm_bb = Llvm.insertion_block c.b in 
