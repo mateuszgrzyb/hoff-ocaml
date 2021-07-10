@@ -37,7 +37,7 @@ let generate_string (c: Misc.context_t) (value: string): Llvm.llvalue =
   with Not_found ->
     generate_global ()
 
-let test () =
+let test (): unit =
   let c = Misc.initialize "test" in 
 
   ignore (Llvm.define_global "global" (generate_string c "global") c.m);

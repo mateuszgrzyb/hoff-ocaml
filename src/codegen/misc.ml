@@ -1,5 +1,9 @@
 
-class ['v] namespace = object
+open Printf
+
+class ['v] namespace (label: string) (error: (string -> exn)) = object
+  val label = label
+  val error = error
   val _tbl = Hashtbl.create 9
   
   method add (name: string) (value: 'v): unit =
@@ -9,40 +13,41 @@ class ['v] namespace = object
   method get (name: string): 'v = 
     try
       Hashtbl.find _tbl name
-    with Not_found -> raise 
-      (Errors.TypeError (Printf.sprintf "User defined type %s not found" name))
-
+    with Not_found -> raise (error (sprintf "%s %s not found" label name))
 end
-
-
-type context_t = 
-  { c: Llvm.llcontext
-  ; m: Llvm.llmodule
-  ; b: Llvm.llbuilder
-  ; names: Llvm.llvalue namespace
-  ; types: Llvm.lltype namespace
-  ; mutable global: bool
-  }
 
 type tv_t = 
   { t: Ast.type_t
   ; v: Llvm.llvalue
   }
 
-module type Node = sig
+type context_t = 
+  { c: Llvm.llcontext
+  ; m: Llvm.llmodule
+  ; b: Llvm.llbuilder
+  ; names: tv_t namespace
+  ; types: Llvm.lltype namespace
+  ; mutable global: bool
+  }
+
+  module type Node = sig
   type t
   val generate: context_t -> t -> tv_t
 end
 
 let initialize (name: string): context_t = 
-  let context = Llvm.global_context () in
+  let context = Llvm.create_context () in
   { c = context
   ; m = Llvm.create_module context name
   ; b = Llvm.builder context
-  ; names = new namespace
-  ; types = new namespace
+  ; names = new namespace "Name" (fun s -> Errors.NameError s)
+  ; types = new namespace "Type" (fun s -> Errors.TypeError s)
   ; global = true
   }
+
+let finalize (c: context_t): unit = 
+  Llvm.dispose_module c.m;
+  Llvm.dispose_context c.c
 
 let rec int_t (c: context_t): Llvm.lltype = Llvm.i32_type c.c
 
@@ -51,7 +56,6 @@ and float_t (c: context_t): Llvm.lltype = Llvm.float_type c.c
 and bool_t (c: context_t): Llvm.lltype = Llvm.i1_type c.c
 
 and string_t (c: context_t): Llvm.lltype = (Llvm.i8_type c.c) |> Llvm.pointer_type
-
 
 and fun_t (c: context_t) (ts: Ast.type_t list): Llvm.lltype = 
   let llvm_t (t: Ast.type_t) = get_llvm_type c t in 

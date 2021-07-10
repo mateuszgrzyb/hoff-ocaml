@@ -11,10 +11,10 @@ let rec take_n (n: int) (l: 'a list): 'a list =
     | [] -> []
     | x :: xs -> x :: take_n (n-1) xs
 
-let rec zip (l1: 'a list) (l2: 'b list): ('a * 'b) list = 
-  match (l1, l2) with
-  | ([], _) | (_, []) -> []
-  | (x :: xs, y :: ys) -> ((x, y) :: zip xs ys)
+let rec zip3 (l1: 'a list) (l2: 'b list) (l3: 'c list): ('a * 'b * 'c) list = 
+  match (l1, l2, l3) with
+  | ([], _, _) | (_, [], _) | (_, _, []) -> []
+  | (x::xs, y::ys, z::zs) -> ((x, y, z) :: zip3 xs ys zs)
 
 let generate_funcdecl 
   (c: Misc.context_t) 
@@ -27,12 +27,12 @@ let generate_funcdecl
   let llvm_function_type = Misc.fun_t c types in
   let llvm_function = Llvm.declare_function name llvm_function_type c.m in 
 
-  List.iter (fun (n, p) ->
-    c.names#add n p
-  ) (List.combine argnames (Array.to_list (Llvm.params llvm_function)));
+  List.iter (fun (n, v, t) ->
+    c.names#add n { v=v; t=t }
+  ) (zip3 argnames (Array.to_list (Llvm.params llvm_function)) types);
 
-  let bb = Llvm.append_block c.c "entry" llvm_function in 
-  Llvm.position_at_end bb c.b;
+  let llvm_bb = Llvm.append_block c.c "entry" llvm_function in 
+  Llvm.position_at_end llvm_bb c.b;
   let body_tv = Expr.generate c body in
   ignore (Llvm.build_ret body_tv.v c.b);
     
