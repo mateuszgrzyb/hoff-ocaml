@@ -10,10 +10,23 @@ let rec generate (c: Misc.context_t) (expr: Ast.expr_t): Misc.tv_t =
   | Case (expr, patterns) -> _generate_case c expr patterns 
   | Call (expr, exprs) -> _generate_call c expr exprs
 
-and _generate_value (c: Misc.context_t) (name: string): Misc.tv_t = 
-  ()
+and _generate_value (_c: Misc.context_t) (_name: string): Misc.tv_t = 
+  failwith ""
 
-and _generate_binop (c: Misc.context_t) (lh: Ast.expr_t) (op: Ast.binop_t) (rh: Ast.expr_t): Misc.tv_t = 
-  let l_tv = generate c lh in 
-  let r_tv = generate c rh in 
-  ()
+and _generate_binop (_c: Misc.context_t) (_lh: Ast.expr_t) (_op: Ast.binop_t) (_rh: Ast.expr_t): Misc.tv_t = 
+  failwith ""
+
+and _generate_unop (_c: Misc.context_t) (_op: Ast.unop_t) (_expr: Ast.expr_t): Misc.tv_t = 
+  failwith ""
+
+and _generate_if (_c: Misc.context_t) (_bexpr: Ast.expr_t) (_expr1: Ast.expr_t) (_expr2: Ast.expr_t): Misc.tv_t = 
+  failwith ""
+
+and _generate_let (_c: Misc.context_t) (_decls: Ast.decl_t list) (_expr: Ast.expr_t): Misc.tv_t = 
+  failwith ""
+
+and _generate_case (_c: Misc.context_t) (_expr: Ast.expr_t) (_patterns): Misc.tv_t = 
+  failwith ""
+
+and _generate_call (_c: Misc.context_t) (_expr: Ast.expr_t) (_exprs: Ast.expr_t list): Misc.tv_t = 
+  failwith ""

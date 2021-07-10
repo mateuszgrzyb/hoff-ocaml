@@ -1,10 +1,12 @@
 {
   open Lexing 
+  open Buffer
   open Parser
   open Errors
 }
 
 let digit = ['0'-'9']
+let newline = '\r' | '\n' | "\r\n"
 
 let int = digit+
 let float = (digit+ '.' digit*) | (digit* '.' digit+)
@@ -14,9 +16,10 @@ let id = ['_' 'a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
 
 rule token = parse 
   | [' ' '\t']+ { token lexbuf }
-  | '\r' | '\n' | "\r\n" { new_line lexbuf; token lexbuf }
+  | newline { new_line lexbuf; token lexbuf }
+  | '#' { token_comment lexbuf }
 
-  | '"' { token_string (Buffer.create 17) lexbuf }
+  | '"' { token_string (create 17) lexbuf }
 
   | "const" { CONST }
   | "fun" { FUN }
@@ -78,17 +81,19 @@ rule token = parse
 
 
 and token_string buf = parse
-  | '"' { STRING (Buffer.contents buf) }
-  | '\\' '/'  { Buffer.add_char buf '/';    token_string buf lexbuf }
-  | '\\' '\\' { Buffer.add_char buf '\\';   token_string buf lexbuf }
-  | '\\' 'b'  { Buffer.add_char buf '\b';   token_string buf lexbuf }
-  | '\\' 'f'  { Buffer.add_char buf '\012'; token_string buf lexbuf }
-  | '\\' 'n'  { Buffer.add_char buf '\n';   token_string buf lexbuf }
-  | '\\' 'r'  { Buffer.add_char buf '\r';   token_string buf lexbuf }
-  | '\\' 't'  { Buffer.add_char buf '\t';   token_string buf lexbuf }
-  | [^ '"' '\\']+
-    { Buffer.add_string buf (Lexing.lexeme lexbuf);
-      token_string buf lexbuf
-    }
-  | _ { raise (LexingError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
+  | '"' { STRING (contents buf) }
+  | '\\' '/'  { add_char buf '/';    token_string buf lexbuf }
+  | '\\' '\\' { add_char buf '\\';   token_string buf lexbuf }
+  | '\\' 'b'  { add_char buf '\b';   token_string buf lexbuf }
+  | '\\' 'f'  { add_char buf '\012'; token_string buf lexbuf }
+  | '\\' 'n'  { add_char buf '\n';   token_string buf lexbuf }
+  | '\\' 'r'  { add_char buf '\r';   token_string buf lexbuf }
+  | '\\' 't'  { add_char buf '\t';   token_string buf lexbuf }
+  | [^ '"' '\\']+ { add_string buf (lexeme lexbuf); token_string buf lexbuf }
+  | _ { raise (LexingError ("Illegal string character: " ^ lexeme lexbuf)) }
   | eof { raise (LexingError ("String is not terminated")) }
+
+and token_comment = parse
+  | newline { new_line lexbuf; token lexbuf }
+  | eof { EOF }
+  | _ { token_comment lexbuf }
