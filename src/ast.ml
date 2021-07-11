@@ -7,12 +7,17 @@ type module_t = g_decl_t list
 and g_decl_t = 
   | GConstDecl of string * type_t * expr_t
   | GFunDecl of string * (string list) * (type_t list) * expr_t
-  | GTypeDecl of string * (constructor_t list)
+  | GTypeDecl of string * user_type_t
   [@@deriving show]
 
 and decl_t = 
   | ConstDecl of string * type_t * expr_t
   | FunDecl of string * (string list) * (type_t list) * expr_t
+  [@@deriving show]
+
+and user_type_t = 
+  | Alias of type_t
+  | ADT of constructor_t list
   [@@deriving show]
 
 and constructor_t = string * (type_t list)

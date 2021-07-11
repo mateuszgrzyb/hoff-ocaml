@@ -67,14 +67,14 @@
 
 module_: 
   | rev_module { List.rev $1 }
-  | error { _raise_error "module" }
+  //| error { _raise_error "module" }
   ;
 
 rev_module: 
   | { [] }
   | EOF { [] }
   | rev_module g_decl { $2 :: $1 }
-  | error { _raise_error "rev_expr" }
+  //| error { _raise_error "rev_expr" }
   ;
 
 // g_decl_t
@@ -85,53 +85,39 @@ g_decl:
     let (ids, types) = split_typed_ids $4 in 
     GFunDecl ($2, ids, (types @ [$7]), $9)
   }
-  | TYPE ID constructor_list { GTypeDecl ($2, $3) }
-  | error { _raise_error "g_decl" }
-  ;
-
-constructor_list:
-  | rev_constructor_list { List.rev $1 }
-  | error { _raise_error "constructor_list" }
-  ;
-
-rev_constructor_list:
-  | BAR constructor { [$2] }
-  | rev_constructor_list BAR constructor { $3 :: $1 }
-  | error { _raise_error "rev_constructor_list" }
-  ;
-
-constructor:
-  | ID LPAREN type_list_comma RPAREN { ($1, $3) }
-  | error { _raise_error "constructor" }
-  ;
-
-type_list_comma:
-  | rev_type_list_comma { List.rev $1 }
-  | error { _raise_error "type_list_comma" }
-  ;
-
-rev_type_list_comma:
-  | { [] }
-  | type_ { [$1] }
-  | rev_type_list_comma COMMA type_ { $3 :: $1 }
-  | error { _raise_error "rev_type_list_comma" }
+  //| TYPE ID constructor_list { GTypeDecl ($2, $3) }
+  | TYPE ID user_type { GTypeDecl ($2, $3) }
+  //| error { _raise_error "g_decl" }
   ;
 
 typed_id:
   | ID COLON type_ { ($1, $3) }
-  | error { _raise_error "typed_id" }
+  //| error { _raise_error "typed_id" }
   ;
 
 rev_typed_id_list:
   | { [] }
   | typed_id { [$1] }
   | rev_typed_id_list COMMA typed_id { $3 :: $1 }
-  | error { _raise_error "rev_typed_id_list" }
+  //| error { _raise_error "rev_typed_id_list" }
   ;
 
 typed_id_list:
   | rev_typed_id_list { List.rev $1 }
-  | error { _raise_error "typed_id_list" }
+  //| error { _raise_error "typed_id_list" }
+  ;
+
+// user_type_t
+
+user_type:
+  | ASSIGN type_ { Alias ($2) }
+  | constructor_list { ADT ($1) }
+  //| error { _raise_error "user_type" }
+  ;
+
+constructor_list:
+  | rev_constructor_list { List.rev $1 }
+  //| error { _raise_error "constructor_list" }
   ;
 
 // decl_t
@@ -142,7 +128,30 @@ decl:
     let (ids, types) = split_typed_ids $4 in 
     FunDecl ($2, ids, (types @ [$7]), $9)
   }
-  | error { _raise_error "decl" }
+  //| error { _raise_error "decl" }
+  ;
+
+rev_constructor_list:
+  | BAR constructor { [$2] }
+  | rev_constructor_list BAR constructor { $3 :: $1 }
+  //| error { _raise_error "rev_constructor_list" }
+  ;
+
+constructor:
+  | ID LPAREN type_list_comma RPAREN { ($1, $3) }
+  //| error { _raise_error "constructor" }
+  ;
+
+type_list_comma:
+  | rev_type_list_comma { List.rev $1 }
+  //| error { _raise_error "type_list_comma" }
+  ;
+
+rev_type_list_comma:
+  | { [] }
+  | type_ { [$1] }
+  | rev_type_list_comma COMMA type_ { $3 :: $1 }
+  //| error { _raise_error "rev_type_list_comma" }
   ;
 
 // expr_t
@@ -181,35 +190,35 @@ expr:
   | CASE expr pattern_match_list %prec CASE { Case ($2, $3) }
   
   | fun_expr LPAREN expr_list RPAREN { Call ($1, $3) }
-  | error { _raise_error "expr" }
+  //| error { _raise_error "expr" }
   ;
 
 pattern_match_list:
   | rev_pattern_match_list { List.rev $1 } 
-  | error { _raise_error "pattern_match_list" }
+  //| error { _raise_error "pattern_match_list" }
   ;
 
 rev_pattern_match_list:
   | OF pattern_match { [$2] }
   | rev_pattern_match_list OF pattern_match { $3 :: $1 }
-  | error { _raise_error "rev_pattern_match_list" }
+  //| error { _raise_error "rev_pattern_match_list" }
   ;
 
 pattern_match:
   | ID LPAREN name_list RPAREN ARROW expr { (($1, $3), $6) }
-  | error { _raise_error "pattern_match" }
+  //| error { _raise_error "pattern_match" }
   ;
 
 name_list:
   | rev_name_list { List.rev $1 }
-  | error { _raise_error "name_list" }
+  //| error { _raise_error "name_list" }
   ;
 
 rev_name_list:
   | { [] }
   | ID { [$1] }
   | rev_name_list COMMA ID { $3 :: $1 }
-  | error { _raise_error "rev_name_list" }
+  //| error { _raise_error "rev_name_list" }
   ;
 
 fun_expr:
@@ -225,25 +234,25 @@ fun_expr:
 
 expr_list:
   | rev_expr_list { List.rev $1 }
-  | error { _raise_error "expr_list" }
+  //| error { _raise_error "expr_list" }
   ;
 
 rev_expr_list:
   | { [] }
   | expr { [$1] }
   | rev_expr_list COMMA expr { $3 :: $1 }
-  | error { _raise_error "rev_expr_list" }
+  //| error { _raise_error "rev_expr_list" }
   ;
 
 decls:
   | rev_decls { List.rev $1 }
-  | error { _raise_error "decls" }
+  //| error { _raise_error "decls" }
   ;
 
 rev_decls:
   | decl { [$1] }
   | rev_decls decl { $2 :: $1 }
-  | error { _raise_error "rev_decls" }
+  //| error { _raise_error "rev_decls" }
   ;
 
 // lit_t
@@ -253,7 +262,7 @@ lit:
   | FLOAT { Float ($1) }
   | BOOL { Bool ($1) }
   | STRING { String ($1) }
-  | error { _raise_error "lit" }
+  //| error { _raise_error "lit" }
   ;
 
 // type_t
@@ -261,12 +270,12 @@ lit:
 type_:
   | ID { parse_type $1 }
   | LPAREN rev_type_list_arrow RPAREN { FunT (List.rev $2) }
-  | error { _raise_error "type" }
+  //| error { _raise_error "type" }
   ;
 
 rev_type_list_arrow:
   | type_ { [$1] }
   | rev_type_list_arrow ARROW type_ { $3 :: $1 }
-  | error { _raise_error "rev_type_list_arrow" }
+  //| error { _raise_error "rev_type_list_arrow" }
   ;
 

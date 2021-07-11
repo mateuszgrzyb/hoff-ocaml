@@ -70,7 +70,7 @@ and _generate_let (c: Misc.context_t) (decls: Ast.decl_t list) (expr: Ast.expr_t
 
   expr_tv
 
-and _generate_case (_c: Misc.context_t) (_expr: Ast.expr_t) (_patterns): Misc.tv_t = 
+and _generate_case (_c: Misc.context_t) (_expr: Ast.expr_t) (_patterns: (Ast.pattern_t * Ast.expr_t) list): Misc.tv_t = 
   failwith ""
 
 and _generate_call (c: Misc.context_t) (expr: Ast.expr_t) (args: Ast.expr_t list): Misc.tv_t = 

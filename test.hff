@@ -1,8 +1,15 @@
 
-# type List 
-#   | Nill ()
-#   | Cons (List, Int)
-# 
+type List 
+  | Nill ()
+  | Cons (Int)
+
+
+type Number = Float
+
+fun testList(l: List): Int = 1
+
+
+#
 # const ala: Int = 
 #   1 + 1
 # 
@@ -33,5 +40,5 @@ const bela: String = "ala ma kota"
 const cela: Bool = True
 const dela: Float = .4444
 
-fun hoff(a: Int, b: Int): Int = 
-  1
+fun hoff(a: Float, b: Float): Float = 
+  1.

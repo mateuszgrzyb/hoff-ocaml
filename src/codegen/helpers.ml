@@ -1,4 +1,6 @@
 
+open Printf
+
 let rec drop_n (n: int) (l: 'a list): 'a list = 
   if n <= 0 then l else 
     match l with 
@@ -15,6 +17,26 @@ let rec zip3 (l1: 'a list) (l2: 'b list) (l3: 'c list): ('a * 'b * 'c) list =
   match (l1, l2, l3) with
   | ([], _, _) | (_, [], _) | (_, _, []) -> []
   | (x::xs, y::ys, z::zs) -> ((x, y, z) :: zip3 xs ys zs)
+
+
+class name_mangler (name: string) = object
+  val name = name
+  method mangle (id: string): string = 
+    sprintf "@%s@%s@" name id
+end
+
+let name_mangler (name: string): (string list -> string) = 
+  let mangler (ids: string list): string = 
+    let sep = "@" in
+    sep ^ (String.concat sep (name :: ids)) ^ sep
+  in 
+    mangler
+
+
+let lambda_name = name_mangler "ANONYMOUS_FUNCTION"
+let local_name = name_mangler "LOCAL_FUNCTION"
+let constructor_name = name_mangler "CONSTRUCTOR"
+
 
 let generate_funcdecl 
   (c: Misc.context_t) 
@@ -52,3 +74,4 @@ let generate_funcdecl
   { t = FunT types
   ; v = llvm_function
   }
+
