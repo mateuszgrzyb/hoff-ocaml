@@ -50,7 +50,7 @@ and _generate_if (c: Misc.context_t) (bexpr: Ast.expr_t) (expr1: Ast.expr_t) (ex
   Llvm.position_at_end llvm_fi_bb c.b;
 
   (* typecheck *)
-  if expr1_tv.t <> expr2_tv.t then raise (Errors.TypeError "if");
+  if Misc.compare_types c expr1_tv.t expr2_tv.t then raise (Errors.TypeError "if");
 
   { t = expr1_tv.t
   ; v = llvm_phi

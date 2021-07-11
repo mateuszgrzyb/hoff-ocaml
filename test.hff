@@ -42,3 +42,6 @@ const dela: Float = .4444
 
 fun hoff(a: Float, b: Float): Float = 
   1.
+
+fun hoff2(a: Number, b: Number): Number = 
+  2.

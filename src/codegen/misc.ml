@@ -76,3 +76,12 @@ and get_llvm_type (c: context_t) (type_: Ast.type_t): Llvm.lltype =
   | StringT -> string_t c
   | FunT ts -> fun_t c ts |> Llvm.pointer_type
   | UserT name -> c.types#get name
+
+
+let compare_types (c: context_t) (t1: Ast.type_t) (t2: Ast.type_t): bool =
+  let extract_user_t: Ast.type_t -> Llvm.lltype = function
+    | Ast.UserT name -> c.types#get name
+    | t -> get_llvm_type c t
+  in
+    let (t1, t2) = (extract_user_t t1, extract_user_t t2) in
+    t1 <> t2

@@ -37,7 +37,6 @@ let lambda_name = name_mangler "ANONYMOUS_FUNCTION"
 let local_name = name_mangler "LOCAL_FUNCTION"
 let constructor_name = name_mangler "CONSTRUCTOR"
 
-
 let generate_funcdecl 
   (c: Misc.context_t) 
   (name: string)
@@ -67,9 +66,8 @@ let generate_funcdecl
     | [] -> raise (Errors.TypeError "")
     | [rt] -> rt
     | ts -> Ast.FunT ts in
-  if body_tv.t <> return_type 
+  if Misc.compare_types c body_tv.t return_type 
     then raise (Errors.TypeError "");
-
 
   { t = FunT types
   ; v = llvm_function
