@@ -1,19 +1,19 @@
 
 open Printf
 
-class ['v] namespace (label: string) (error: (string -> exn)) = object
+class ['k, 'v] symboltable (label: string) (error: (string -> exn)) (to_str: 'k -> string) = object
   val label = label
   val error = error
   val _tbl = Hashtbl.create 9
   
-  method add (name: string) (value: 'v): unit =
+  method add (name: 'k) (value: 'v): unit =
     Hashtbl.add _tbl name value
-  method remove (name: string): unit = 
+  method remove (name: 'k): unit = 
     Hashtbl.remove _tbl name
-  method get (name: string): 'v = 
+  method get (name: 'k): 'v = 
     try
       Hashtbl.find _tbl name
-    with Not_found -> raise (error (sprintf "%s %s not found" label name))
+    with Not_found -> raise (error (sprintf "%s %s not found" label (to_str name)))
 end
 
 type tv_t = 
@@ -21,12 +21,15 @@ type tv_t =
   ; v: Llvm.llvalue
   }
 
+module StringMap = Map.Make(String)
+
 type context_t = 
   { c: Llvm.llcontext
   ; m: Llvm.llmodule
   ; b: Llvm.llbuilder
-  ; names: tv_t namespace
-  ; types: Llvm.lltype namespace
+  ; names: (string, tv_t) symboltable
+  ; types: (string, Llvm.lltype) symboltable
+  ; constructors: (Ast.type_t, (Ast.type_t list) StringMap.t) symboltable
   ; mutable global: bool
   }
 
@@ -40,8 +43,9 @@ let initialize (name: string): context_t =
   { c = context
   ; m = Llvm.create_module context name
   ; b = Llvm.builder context
-  ; names = new namespace "Name" (fun s -> Errors.NameError s)
-  ; types = new namespace "Type" (fun s -> Errors.TypeError s)
+  ; names = new symboltable "Name" (fun s -> Errors.NameError s) Fun.id
+  ; types = new symboltable "Type" (fun s -> Errors.TypeError s) Fun.id
+  ; constructors = new symboltable "Constructor" (fun s -> Errors.ConstructorError s) Ast.show_type_t
   ; global = true
   }
 
@@ -49,12 +53,15 @@ let finalize (c: context_t): unit =
   Llvm.dispose_module c.m;
   Llvm.dispose_context c.c
 
+let with_context (name: string) (action: context_t -> 'a): 'a =
+  let context = initialize name in 
+  let result = action context in 
+  finalize context;
+  result
+
 let rec int_t (c: context_t): Llvm.lltype = Llvm.i32_type c.c
-
 and float_t (c: context_t): Llvm.lltype = Llvm.float_type c.c
-
 and bool_t (c: context_t): Llvm.lltype = Llvm.i1_type c.c
-
 and string_t (c: context_t): Llvm.lltype = (Llvm.i8_type c.c) |> Llvm.pointer_type
 
 and fun_t (c: context_t) (ts: Ast.type_t list): Llvm.lltype = 

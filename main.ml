@@ -6,7 +6,6 @@ let parse_file (name: string): Ast.module_t =
   let lexbuf = Lexing.from_channel inx in
   Parser.module_ Lexer.token lexbuf
 
-
 let main () = 
   if Array.length Sys.argv == 1 then 
     print_endline ("Usage: " ^ Sys.argv.(0) ^ " <source file name>")
@@ -20,8 +19,12 @@ let main () =
       let c = Misc.initialize name in
       ignore (Module.generate c compiled_ast);
       Llvm_analysis.assert_valid_module c.m;
-      Llvm.dump_module c.m
-    with exn -> print_endline (Printexc.to_string exn)
+      Llvm.dump_module c.m;
+      Misc.finalize c
+    with exn -> 
+      match String.split_on_char '.' (Printexc.to_string exn) with
+      | (_::msg::_) -> print_endline msg
+      | _ -> failwith "Unknown error msg"
 
 
 let generate_string (c: Misc.context_t) (value: string): Llvm.llvalue = 

@@ -1,6 +1,7 @@
 exception LexingError of string
 exception ParsingError of string
 exception TypeError of string
+exception ConstructorError of string
 exception NameError of string
 
 type pos_t = 

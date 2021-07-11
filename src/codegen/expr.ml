@@ -70,8 +70,23 @@ and _generate_let (c: Misc.context_t) (decls: Ast.decl_t list) (expr: Ast.expr_t
 
   expr_tv
 
-and _generate_case (_c: Misc.context_t) (_expr: Ast.expr_t) (_patterns: (Ast.pattern_t * Ast.expr_t) list): Misc.tv_t = 
-  failwith ""
+and _generate_case (c: Misc.context_t) (expr: Ast.expr_t) (patterns: (Ast.pattern_t * Ast.expr_t) list): Misc.tv_t = 
+  let expr_tv = generate c expr in
+  let _constructors = c.constructors#get expr_tv.t in
+  let (pattern, match_) = List.find (fun (pattern, _) -> 
+    let (name, _bound_vars) = pattern in
+    match Misc.StringMap.find_opt name _constructors with 
+    | None -> false 
+    | Some _ -> true
+  ) patterns in 
+
+  
+  let match_tv = generate c match_ in
+
+  ignore (pattern);
+
+  match_tv
+
 
 and _generate_call (c: Misc.context_t) (expr: Ast.expr_t) (args: Ast.expr_t list): Misc.tv_t = 
   (* 
