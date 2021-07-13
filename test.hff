@@ -1,7 +1,7 @@
 
 type List 
   | Nill ()
-  | Cons (Int)
+  | Cons (List, Int)
 
 
 type Number = Float
@@ -41,7 +41,13 @@ const cela: Bool = True
 const dela: Float = .4444
 
 fun hoff(a: Float, b: Float): Float = 
-  1.
+  if True
+    then a 
+    else b
 
 fun hoff2(a: Number, b: Number): Number = 
-  2.
+  let 
+    fun localhoff2(a: Number, b: Number): Number = 
+      3.
+  in 
+    localhoff2(a, b)

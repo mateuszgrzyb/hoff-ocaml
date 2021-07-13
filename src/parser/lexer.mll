@@ -12,7 +12,7 @@ let int = digit+
 let float = (digit+ '.' digit*) | (digit* '.' digit+)
 let bool = "True" | "False"
 
-let id = ['_' 'a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
+let id = ['_' 'a'-'z' 'A'-'Z'] ['_' 'a'-'z' 'A'-'Z' '0'-'9']*
 
 rule token = parse 
   | [' ' '\t']+ { token lexbuf }
