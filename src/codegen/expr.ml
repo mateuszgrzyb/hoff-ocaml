@@ -60,18 +60,24 @@ and _generate_if (c: Misc.context_t) (bexpr: Ast.expr_t) (expr1: Ast.expr_t) (ex
 and _generate_let (c: Misc.context_t) (decls: Ast.decl_t list) (expr: Ast.expr_t): Misc.tv_t = 
   let llvm_bb = Llvm.insertion_block c.b in 
 
-  List.iter (fun _decl -> ()) decls;
+  List.iter (function
+  | Ast.ConstDecl (_, _, _) -> ()
+  | Ast.FunDecl (name, _, types, _) -> c.names#add name (Helpers.generate_funcpredecl c name types)
+  ) decls;
+
   List.iter (function 
   | Ast.ConstDecl (_name, _type_, _expr) -> ()
-  | Ast.FunDecl (name, args, types, body) -> let f = Helpers.generate_funcdecl generate c (Helpers.local_name [name]) args types body in c.names#add name f
+  | Ast.FunDecl (name, args, types, body) -> 
+    let f = c.names#get name in
+    ignore (Helpers.generate_funcdef generate c f.v args types body)
   ) decls;
 
   Llvm.position_at_end llvm_bb c.b;
   let expr_tv = generate c expr in 
 
   List.iter (function 
-  | Ast.ConstDecl (_name, _type_, _expr) -> ()
-  | Ast.FunDecl (name, _args, _types, _body) -> c.names#remove name
+  | Ast.ConstDecl (name, _, _) -> c.names#remove name
+  | Ast.FunDecl (name, _, _, _) -> c.names#remove name
   ) decls;
 
   expr_tv

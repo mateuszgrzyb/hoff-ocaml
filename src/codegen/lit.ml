@@ -36,7 +36,6 @@ and _generate_string (c: Misc.context_t) (s: string): Misc.tv_t =
     else local_generate_string ()
   in
 
-  Llvm.type_of v |> Llvm.string_of_lltype |> print_endline;
   { t = StringT
   ; v = v
   }

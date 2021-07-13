@@ -51,6 +51,11 @@ and expr_t =
   | Call of expr_t * (expr_t list)
   [@@deriving show]
 
+and id_t = 
+  | QualifiedId of (string list) * string
+  | Id of string
+  [@@deriving show]
+
 and pattern_t = string * (string list)
   [@@deriving show]
 

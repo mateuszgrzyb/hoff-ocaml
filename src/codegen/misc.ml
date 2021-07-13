@@ -31,6 +31,7 @@ type context_t =
   ; types: (string, Llvm.lltype) symboltable
   ; constructors: (Ast.type_t, (Ast.type_t list) StringMap.t) symboltable
   ; mutable global: bool
+  ; module_name: string
   }
 
   module type Node = sig
@@ -39,6 +40,9 @@ type context_t =
 end
 
 let initialize (name: string): context_t = 
+  let name = String.split_on_char '.' name 
+    |> List.hd 
+    |> String.map (function | '/' -> '.' | c -> c) in 
   let context = Llvm.create_context () in
   { c = context
   ; m = Llvm.create_module context name
@@ -47,17 +51,12 @@ let initialize (name: string): context_t =
   ; types = new symboltable "Type" (fun s -> Errors.TypeError s) Fun.id
   ; constructors = new symboltable "Constructor" (fun s -> Errors.ConstructorError s) Ast.show_type_t
   ; global = true
+  ; module_name = name
   }
 
 let finalize (c: context_t): unit = 
   Llvm.dispose_module c.m;
   Llvm.dispose_context c.c
-
-let with_context (name: string) (action: context_t -> 'a): 'a =
-  let context = initialize name in 
-  let result = action context in 
-  finalize context;
-  result
 
 let rec int_t (c: context_t): Llvm.lltype = Llvm.i32_type c.c
 and float_t (c: context_t): Llvm.lltype = Llvm.float_type c.c
@@ -92,3 +91,9 @@ let compare_types (c: context_t) (t1: Ast.type_t) (t2: Ast.type_t): bool =
   in
     let (t1, t2) = (extract_user_t t1, extract_user_t t2) in
     t1 <> t2
+
+
+let unwrap_id (c: context_t) (id: Ast.id_t): string = 
+  match id with 
+  | Id name -> c.module_name ^ "." ^ name
+  | QualifiedId (mods, name) -> String.concat "." mods ^ "." ^ name

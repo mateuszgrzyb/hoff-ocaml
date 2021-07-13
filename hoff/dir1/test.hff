@@ -1,12 +1,15 @@
 
 type List 
   | Nill ()
-  | Cons (List, Int)
+  | Cons (Int)
 
 
 type Number = Float
 
-fun testList(l: List): Int = 1
+# fun testList(l: List): Int =
+#   case l 
+#     of Nill () -> 0
+#     of Cons (i) -> i
 
 
 #
@@ -59,3 +62,9 @@ fun hoff2(a: Float, b: Float): Float =
       3.
   in 
     localhoff2(a, b)
+
+
+# const something: Int = 
+#   case l 
+#     of Nill () -> 0
+#     of Cons (i) -> i

@@ -73,8 +73,6 @@ let generate_funcdef
   *)
   let body_tv = expr_generate c body in
 
-  print_endline ("its over");
-
   ignore (Llvm.build_ret body_tv.v c.b);
   
     
@@ -95,6 +93,7 @@ let generate_funcdef
   ; v = llvm_function
   }
 
+(*
 let generate_funcdecl
   (expr_generate: Misc.context_t -> Ast.expr_t -> Misc.tv_t)
   (c: Misc.context_t) 
@@ -146,4 +145,5 @@ let generate_constdecl
   : Misc.tv_t = 
   generate_funcdecl expr_generate c (const_name [name]) [] [type_] expr
 
+*)
 
