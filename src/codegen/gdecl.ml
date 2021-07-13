@@ -8,10 +8,7 @@ let rec predeclare (c: Misc.context_t) (g_decl: Ast.g_decl_t): unit =
       }
     
   | GFunDecl (name, _, types, _) -> 
-      c.names#add name 
-      { t = FunT types
-      ; v = Llvm.declare_global (Misc.get_llvm_type c (FunT types)) name c.m
-      }
+      c.names#add name (Helpers.generate_funcpredecl c name types)
 
   | GTypeDecl (name, _) -> 
     c.types#add name (Llvm.named_struct_type c.c name)
@@ -29,9 +26,8 @@ and _generate_gconstdecl (c: Misc.context_t) (name: string) (type_: Ast.type_t) 
 
 and _generate_gfundecl (c: Misc.context_t) (name: string) (argnames: string list) (types: Ast.type_t list) (body: Ast.expr_t): unit = 
   c.global <- false;
-  match (Llvm.lookup_function name c.m) with 
-  | Some v -> ignore (Helpers.generate_funcdef Expr.generate c v argnames types body);
-  | None -> ignore (Helpers.generate_funcdecl Expr.generate c name argnames types body);
+  let f = c.names#get name in
+  ignore (Helpers.generate_funcdef Expr.generate c f.v argnames types body);
   c.global <- true;
 
 and _generate_gtypedecl (c: Misc.context_t) (name: string) (user_type: Ast.user_type_t): unit = 

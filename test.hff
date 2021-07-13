@@ -45,9 +45,17 @@ fun hoff(a: Float, b: Float): Float =
     then a 
     else b
 
-fun hoff2(a: Number, b: Number): Number = 
+fun fibo(i: Int): Int = 
+  if True
+    then fibo(2)
+    else fibo(1)
+
+fun one(): Int = 
+  1
+
+fun hoff2(a: Float, b: Float): Float = 
   let 
-    fun localhoff2(a: Number, b: Number): Number = 
+    fun localhoff2(a: Float, b: Float): Float = 
       3.
   in 
     localhoff2(a, b)
