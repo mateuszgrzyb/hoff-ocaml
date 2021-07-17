@@ -3,6 +3,11 @@
   open Buffer
   open Parser
   open Errors
+
+  let to_qualid (id: string): (string list) * string = 
+    let ids = id |> String.split_on_char '.' |> List.rev in 
+    (ids |> List.tl |> List.rev, List.hd ids)
+
 }
 
 let digit = ['0'-'9']
@@ -13,6 +18,7 @@ let float = (digit+ '.' digit*) | (digit* '.' digit+)
 let bool = "True" | "False"
 
 let id = ['_' 'a'-'z' 'A'-'Z'] ['_' 'a'-'z' 'A'-'Z' '0'-'9']*
+let qualid = id ('.' id)+
 
 rule token = parse 
   | [' ' '\t']+ { token lexbuf }
@@ -75,6 +81,7 @@ rule token = parse
   | float { FLOAT (float_of_string (lexeme lexbuf)) }
   | bool { BOOL (bool_of_string (String.lowercase_ascii (lexeme lexbuf))) }
   | id { ID (lexeme lexbuf) }
+  | qualid { QUALID (to_qualid (lexeme lexbuf))}
 
   | _ { raise (LexingError ("Unexpected char: " ^ lexeme lexbuf)) }
   | eof { EOF }

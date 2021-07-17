@@ -23,6 +23,7 @@
 %token <string> STRING
 
 %token <string> ID
+%token <(string list) * string> QUALID
 
 %token ADD SUB MUL DIV REM
 %token LT LE EQ NE GE GT
@@ -58,22 +59,22 @@
 %right NEG NOT
 
 
-%type <Ast.module_t> module_
-%start module_
+%type <Ast.g_decl_t list> g_decls
+%start g_decls
 
 %%
 
 // module_t
 
-module_: 
-  | rev_module { List.rev $1 }
+g_decls: 
+  | rev_g_decls { List.rev $1 }
   //| error { _raise_error "module" }
   ;
 
-rev_module: 
+rev_g_decls: 
   | { [] }
   | EOF { [] }
-  | rev_module g_decl { $2 :: $1 }
+  | rev_g_decls g_decl { $2 :: $1 }
   //| error { _raise_error "rev_expr" }
   ;
 
@@ -158,7 +159,7 @@ rev_type_list_comma:
 
 expr:
   
-  | ID { Val ($1) }
+  | id { Val ($1) }
   | lit { Lit ($1) }
  
   | expr ADD expr { BinOp ($1, Add, $3) }
@@ -189,8 +190,14 @@ expr:
   | LET decls IN expr %prec LETIN { Let ($2, $4) }
   | CASE expr pattern_match_list %prec CASE { Case ($2, $3) }
   
-  | fun_expr LPAREN expr_list RPAREN { Call ($1, $3) }
+  //| fun_expr LPAREN expr_list RPAREN { Call ($1, $3) }
+  | id LPAREN expr_list RPAREN { Call ($1, $3) }
   //| error { _raise_error "expr" }
+  ;
+
+id:
+  | ID { Id ($1) }
+  | QUALID { let ms, name = $1 in QualifiedId (ms, name) }
   ;
 
 pattern_match_list:
@@ -221,16 +228,16 @@ rev_name_list:
   //| error { _raise_error "rev_name_list" }
   ;
 
+  /*
 fun_expr:
   | ID { Val ($1) }
-  /*
   | FUN LPAREN typed_id_list RPAREN COLON type_ FATARROW expr { 
     let (ids, types) = split_typed_ids $3 in 
     Lit (Lambda (ids, (types @ [$6]), $8))
   }
-  */
   | error { _raise_error "fun_expr" }
   ;
+  */
 
 expr_list:
   | rev_expr_list { List.rev $1 }

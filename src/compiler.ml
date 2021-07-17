@@ -1,8 +1,16 @@
 
+let _convert_name (name: string): string = 
+  String.split_on_char '.' name 
+    |> List.hd 
+    |> String.map (function 
+      | '/' -> '.'
+      | c -> c
+    )
+
 let _to_syntaxtree (name: string): Ast.module_t = 
   let inx = Core.In_channel.create name in
   let lexbuf = Lexing.from_channel inx in
-  Parser.module_ Lexer.token lexbuf
+  (_convert_name name, Parser.g_decls Lexer.token lexbuf)
 
 let to_syntaxtree (name: string): string = 
   _to_syntaxtree name |> Ast.show_module_t
@@ -20,3 +28,21 @@ let to_llvmir (name: string): string  =
   Misc.finalize c;
   result
 
+
+let link (names: string list): Llvm.llmodule = 
+  let modules = List.map _to_syntaxtree names in 
+  let c = Misc.initialize "main" in
+
+  List.iter (fun m -> m |> Ast.show_module_t |> print_endline) modules;
+
+  List.iter (fun (name, decls) -> 
+    c.in_module <- Some name; 
+    List.iter (Gdecl.predeclare c) decls
+  ) modules;
+
+  List.iter (fun (name, decls) -> 
+    c.in_module <- Some name; 
+    List.iter (Gdecl.generate c) decls
+  ) modules;
+
+  c.m

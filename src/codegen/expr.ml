@@ -1,16 +1,17 @@
 
 let rec generate (c: Misc.context_t) (expr: Ast.expr_t): Misc.tv_t =
   match expr with
-  | Val (name) -> _generate_value c name
+  | Val (id) -> _generate_value c id
   | Lit (lit) -> Lit.generate c lit
   | BinOp (lh, op, rh) -> _generate_binop c lh op rh
   | UnOp (op, expr) -> _generate_unop c op expr 
   | If (bexpr, expr1, expr2) -> _generate_if c bexpr expr1 expr2
   | Let (decls, expr) -> _generate_let c decls expr 
   | Case (expr, patterns) -> _generate_case c expr patterns 
-  | Call (expr, exprs) -> _generate_call c expr exprs
+  | Call (id, exprs) -> _generate_call c id exprs
 
-and _generate_value (c: Misc.context_t) (name: string): Misc.tv_t = 
+and _generate_value (c: Misc.context_t) (id: Ast.id_t): Misc.tv_t = 
+  let name = Misc.unwrap_id c id in 
   c.names#get name
 
 and _generate_binop (_c: Misc.context_t) (_lh: Ast.expr_t) (_op: Ast.binop_t) (_rh: Ast.expr_t): Misc.tv_t = 
@@ -100,7 +101,8 @@ and _generate_case (c: Misc.context_t) (expr: Ast.expr_t) (patterns: (Ast.patter
   match_tv
 
 
-and _generate_call (c: Misc.context_t) (expr: Ast.expr_t) (args: Ast.expr_t list): Misc.tv_t = 
+and _generate_call (c: Misc.context_t) (id: Ast.id_t) (args: Ast.expr_t list): Misc.tv_t = 
+(*
   (* 
   generate call can either generate value returned from function
   or another function which is partially applied
@@ -113,8 +115,13 @@ and _generate_call (c: Misc.context_t) (expr: Ast.expr_t) (args: Ast.expr_t list
 
   let expr_tv = generate c expr in
   let (values, _types) = split (List.map (generate c) args) in
+*)
+  let name = Misc.unwrap_id c id in 
+  let f_tv = c.names#get name in 
+
+  let values = List.map (fun e -> (generate c e).v) args in 
 
   (* typecheck *)
-  { t = expr_tv.t
-  ; v = Llvm.build_call expr_tv.v (Array.of_list values) "call" c.b
+  { t = f_tv.t
+  ; v = Llvm.build_call f_tv.v (Array.of_list values) "call" c.b
   }

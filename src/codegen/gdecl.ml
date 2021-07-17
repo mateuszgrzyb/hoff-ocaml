@@ -1,23 +1,33 @@
 
 let rec predeclare (c: Misc.context_t) (g_decl: Ast.g_decl_t): unit =
+
   match g_decl with
   | GConstDecl (name, type_, _) ->
+    let name = Misc.qualify_name c name in 
       c.names#add name 
       { t = type_
       ; v = Llvm.declare_global (Misc.get_llvm_type c type_) name c.m
       }
     
   | GFunDecl (name, _, types, _) -> 
-      c.names#add name (Helpers.generate_funcpredecl c name types)
+    let name = Misc.qualify_name c name in 
+    c.names#add name (Helpers.generate_funcpredecl c name types)
 
   | GTypeDecl (name, _) -> 
+    let name = Misc.qualify_name c name in 
     c.types#add name (Llvm.named_struct_type c.c name)
 
 and generate (c: Misc.context_t) (g_decl: Ast.g_decl_t): unit =
   match g_decl with
-  | GConstDecl (name, type_, expr) -> _generate_gconstdecl c name type_ expr
-  | GFunDecl (name, argnames, types, expr) -> _generate_gfundecl c name argnames types expr
-  | GTypeDecl (name, user_type) -> _generate_gtypedecl c name user_type
+  | GConstDecl (name, type_, expr) -> 
+    let name = Misc.qualify_name c name in 
+    _generate_gconstdecl c name type_ expr
+  | GFunDecl (name, argnames, types, expr) -> 
+    let name = Misc.qualify_name c name in 
+    _generate_gfundecl c name argnames types expr
+  | GTypeDecl (name, user_type) -> 
+    let name = Misc.qualify_name c name in 
+    _generate_gtypedecl c name user_type
 
 and _generate_gconstdecl (c: Misc.context_t) (name: string) (type_: Ast.type_t) (expr: Ast.expr_t): unit = 
   let expr_tv = Expr.generate c expr in

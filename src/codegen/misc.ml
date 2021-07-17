@@ -31,18 +31,10 @@ type context_t =
   ; types: (string, Llvm.lltype) symboltable
   ; constructors: (Ast.type_t, (Ast.type_t list) StringMap.t) symboltable
   ; mutable global: bool
-  ; module_name: string
+  ; mutable in_module: string option
   }
 
-  module type Node = sig
-  type t
-  val generate: context_t -> t -> tv_t
-end
-
 let initialize (name: string): context_t = 
-  let name = String.split_on_char '.' name 
-    |> List.hd 
-    |> String.map (function | '/' -> '.' | c -> c) in 
   let context = Llvm.create_context () in
   { c = context
   ; m = Llvm.create_module context name
@@ -51,7 +43,7 @@ let initialize (name: string): context_t =
   ; types = new symboltable "Type" (fun s -> Errors.TypeError s) Fun.id
   ; constructors = new symboltable "Constructor" (fun s -> Errors.ConstructorError s) Ast.show_type_t
   ; global = true
-  ; module_name = name
+  ; in_module = None
   }
 
 let finalize (c: context_t): unit = 
@@ -93,7 +85,11 @@ let compare_types (c: context_t) (t1: Ast.type_t) (t2: Ast.type_t): bool =
     t1 <> t2
 
 
+let qualify_name (c: context_t) (name: string): string = 
+  assert (Option.is_some c.in_module);
+  Option.get c.in_module ^ "." ^ name
+
 let unwrap_id (c: context_t) (id: Ast.id_t): string = 
   match id with 
-  | Id name -> c.module_name ^ "." ^ name
+  | Id name -> qualify_name c name
   | QualifiedId (mods, name) -> String.concat "." mods ^ "." ^ name

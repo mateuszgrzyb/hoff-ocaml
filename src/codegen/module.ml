@@ -1,4 +1,5 @@
 
 let generate (c: Misc.context_t) (module_: Ast.module_t): unit =
-  List.iter (Gdecl.predeclare c) module_ ;
-  List.iter (Gdecl.generate c) module_
+  let _, gdecls = module_ in 
+  List.iter (Gdecl.predeclare c) gdecls ;
+  List.iter (Gdecl.generate c) gdecls

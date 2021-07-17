@@ -1,7 +1,7 @@
 
 
 
-type module_t = g_decl_t list
+type module_t = string * g_decl_t list
   [@@deriving show]
 
 and g_decl_t = 
@@ -41,14 +41,14 @@ and lit_t =
   [@@deriving show]
 
 and expr_t = 
-  | Val of string
+  | Val of id_t
   | Lit of lit_t
   | BinOp of expr_t * binop_t * expr_t
   | UnOp of unop_t * expr_t
   | If of expr_t * expr_t * expr_t
   | Let of (decl_t list) * expr_t
   | Case of expr_t * (pattern_t * expr_t) list
-  | Call of expr_t * (expr_t list)
+  | Call of id_t * (expr_t list)
   [@@deriving show]
 
 and id_t = 

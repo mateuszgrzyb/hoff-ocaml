@@ -16,7 +16,6 @@ type Number = Float
 # const ala: Int = 
 #   1 + 1
 # 
-# const l: List = Nill ()
 # 
 # const alaName: String = 
 #   "ala ma kota" 
@@ -43,28 +42,29 @@ const bela: String = "ala ma kota"
 const cela: Bool = True
 const dela: Float = .4444
 
-fun hoff(a: Float, b: Float): Float = 
-  if True
-    then a 
-    else b
+# fun hoff(a: Float, b: Float): Float = 
+#   if True
+#     then a 
+#     else b
+# 
+# fun fibo(i: Int): Int = 
+#   if True
+#     then fibo(2)
+#     else fibo(1)
+# 
+# fun one(): Int = 
+#   1
+# 
+# fun hoff2(a: Float, b: Float): Float = 
+#   let 
+#     fun localhoff2(a: Float, b: Float): Float = 
+#       3.
+#   in 
+#     localhoff2(a, b)
 
-fun fibo(i: Int): Int = 
-  if True
-    then fibo(2)
-    else fibo(1)
+const l: List = Nill ()
 
-fun one(): Int = 
-  1
-
-fun hoff2(a: Float, b: Float): Float = 
-  let 
-    fun localhoff2(a: Float, b: Float): Float = 
-      3.
-  in 
-    localhoff2(a, b)
-
-
-# const something: Int = 
-#   case l 
-#     of Nill () -> 0
-#     of Cons (i) -> i
+const something: Int = 
+  case l 
+    of Nill () -> 0
+    of Cons (i) -> i
