@@ -1,24 +1,25 @@
 (include_subdirs unqualified)
 
-(subdir src
- (subdir astgeneration
+(subdir
+ src
+ (subdir
+  astgeneration
   (ocamllex lexer)
   (menhir
    (flags --table)
    (modules parser)))
-   
-  ;(rule
-  ; (targets parser_messages.ml)
-  ; (deps parser.messages parser.mly)
-  ; (action (with-stdout-to %{targets} 
-  ;          (run menhir --compile-errors %{deps}))))
-            )
-
+ ;(rule
+ ; (targets parser_messages.ml)
+ ; (deps parser.messages parser.mly)
+ ; (action (with-stdout-to %{targets} 
+ ;          (run menhir --compile-errors %{deps}))))
+ )
 
 (executable
  (name main)
  (libraries core llvm llvm.analysis sedlex sedlex.ppx menhirLib)
- (preprocess (pps ppx_deriving.show sedlex.ppx)))
+ (preprocess
+  (pps ppx_deriving.show sedlex.ppx)))
 
 ;; run on changing file parser.mly
 ; cd src/astgeneration

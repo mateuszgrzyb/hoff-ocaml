@@ -1,0 +1,8 @@
+name: "hoff"
+
+services:
+  main:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+

@@ -1,0 +1,96 @@
+
+fun f1 (): Int =
+    f2 ()
+
+fun f2 (): Int = 
+    f1 ()
+
+fun locals (): Int =
+    let
+        fun ff1 (): Int =
+            1
+        fun ff2 (): Int =
+            ff1 ()
+    in
+        0
+
+val ala: Int  = 
+    1 + 2
+
+val bela: String =
+    "s"
+
+fun something (): String =
+    "ala ma kota"
+
+fun main (): Int =
+    print_int (ala) ;;
+    # print_string ("ala") ;;
+    # print_string (something ()) ;;
+    0
+
+# type Student 
+#     | Me 
+#     | You
+# 
+# type Int2 = Int
+# 
+# fun fibonacci(n: Int): Int = 
+#     if n < 2
+#     then n
+#     else fibonacci(n - 1) + fibonacci(n - 2)
+# 
+# fun (***)(a: Int, b: Int): Int =
+#     a - b
+# 
+# fun something(a: Int, b: Int): Int = 
+#     a + b
+# 
+# fun something2(a: Int, b: Int): Int = 
+#     let
+#         fun adder(a1: Int, b1: Int): Int = 
+#             a1 + b1
+#     in 
+#         adder(a, b)
+# 
+# fun something3(a: Int, b: Int, adder: (Int -> Int -> Int)): Int = 
+#     adder(a, b)
+# 
+# fun globalAdder(a: Int, b: Int): Int = 
+#     a + b
+# 
+# # fun higherAdder(lr: Bool): (Int -> Int -> Int) =
+# #     let 
+# #         fun leftAdder(a: Int, b: Int): Int = 
+# #             a + b + 10
+# #         fun rightAdder(a: Int, b: Int): Int = 
+# #             a + b + 100
+# #     in
+# #         if lr
+# #         then leftAdder
+# #         else rightAdder
+#         
+# 
+# val ala: String = "ala"
+# 
+# fun read_stdio (): Int = 
+#     let 
+#         val name: String = read_string()
+#     in
+#         # print_string (name) ;;
+#         0
+# 
+# fun main(): Int =
+#     let 
+#         val bela: String = "bela"
+#         val i: Int = 33
+#     in
+#         print_int (something (3, 4)) ;;
+#         print_int (something2 (3, 4)) ;;
+#         print_int (something3 (3, 4, globalAdder)) ;;
+#         print_int (3 *** 4) ;;
+#         print_int (fibonacci (4)) ;;
+#         print_int (i) ;;
+#         print_string ("ala") ;;
+#         # print_string (bela) ;;
+#         333

@@ -14,7 +14,7 @@
 
 
   let op_name (op: string): string = 
-    "HOFF_OVERLOADED_OPERATOR_" ^ op
+    "$HOFF_OVERLOADED_OPERATOR_" ^ op
 
 %}
 
@@ -33,7 +33,7 @@
 %token IF "if" THEN "then" ELSE "else"
 %token LET "let" IN "in"
 %token CASE "case"
-%token TYPE "type" BAR "|"
+%token TYPE "type" BAR "|" GET "."
 %token CONV "::" CHAIN ";;"
 
 %token ADD "+" SUB "-" MUL "*" DIV "/" REM "%"
@@ -58,6 +58,7 @@
 %left  ADD SUB
 %left  MUL DIV REM
 %right NOT NEG
+%nonassoc GET
 
 %type <Ast.g_decl_t list> main
 %start main
@@ -112,6 +113,8 @@ expr:
   | expr ">"  expr { BinOp ($1, Gt, $3) }
   | expr "!=" expr { BinOp ($1, Ne, $3) }
   | expr "==" expr { BinOp ($1, Eq, $3) }
+
+  | expr "." INT { GetOp ($1, $3) }
 
   | expr OP expr { Fun (op_name $2, [$1; $3]) }
 

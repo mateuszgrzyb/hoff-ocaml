@@ -1,15 +1,14 @@
-
-type token = 
+type token =
   | VAL
   | TYPE
-  | TID of (string)
+  | TID of string
   | THEN
   | SUB
-  | STRING of (string)
+  | STRING of string
   | REM
   | RC
   | OR
-  | OP of (string)
+  | OP of string
   | NOT
   | NE
   | MUL
@@ -17,14 +16,14 @@ type token =
   | LET
   | LE
   | LC
-  | INT of (int)
+  | INT of int
   | IN
   | IF
-  | ID of (string)
+  | ID of string
   | GT
   | GE
   | FUN
-  | FLOAT of (float)
+  | FLOAT of float
   | EQ
   | EOF
   | ELSE
@@ -33,10 +32,10 @@ type token =
   | COMMA
   | COLON
   | CASE
-  | BOOL of (bool)
+  | BOOL of bool
   | BAR
   | ASSIGN
   | ARROW
   | AND
   | ADD
-  [@@deriving show]
+[@@deriving show]
