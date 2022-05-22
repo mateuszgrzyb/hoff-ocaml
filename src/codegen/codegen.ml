@@ -56,9 +56,14 @@ let generate (name : string) (ds : g_decl_t list) =
     let r_type = get_llvm_t result in
     let f_t = Llvm.function_type r_type arg_types in
     Llvm.declare_function name f_t module_
-  and generate_generic_valpredecl (name : id_t) (type_ : type_t) =
-    let f = generate_generic_funpredecl (global_name ^ name) [] type_ in
-    Llvm.add_function_attr f inline_attr Llvm.AttrIndex.Function
+  and generate_generic_valpredecl (name : id_t) (type_ : type_t) (expr : expr_t) =
+    let name, args, result, inline =
+      match expr with
+      | Lit (Lambda (args, result, _)) -> name, args, result, false
+      | _ -> global_name ^ name, [], type_, true
+    in
+    let f = generate_generic_funpredecl name args result in
+    if inline then Llvm.add_function_attr f inline_attr Llvm.AttrIndex.Function
   and generate_generic_typepredecl (name : id_t) =
     let t = Llvm.named_struct_type context name in
     Hashtbl.add user_types name t
@@ -118,8 +123,18 @@ let generate (name : string) (ds : g_decl_t list) =
     | GFunDecl (name, args, return, body) -> generate_g_fundecl name args return body
     | GTypeDecl (name, type_) -> generate_g_typedecl name type_
   and generate_g_valdecl name type_ expr =
+    (* if value is lambda, inline it at compile time *)
+    let name, args, result, expr =
+      match expr with
+      | Lit (Lambda (args, result, body)) -> name, args, result, body
+      | _ -> global_name ^ name, [], type_, expr
+    in
+    let f = generate_generic_funpredecl name args result in
+    ignore (generate_generic_fundecl f name args expr)
+  (*
     let f = generate_generic_funpredecl (global_name ^ name) [] type_ in
     ignore (generate_generic_fundecl f name [] expr)
+       *)
   and generate_g_fundecl name args result body =
     let f = generate_generic_funpredecl name args result in
     ignore (generate_generic_fundecl f name args body)
@@ -326,7 +341,7 @@ let generate (name : string) (ds : g_decl_t list) =
       (match e with
       | Lit ((Int _ | Bool _ | Float _) as lit) ->
         ignore (Llvm.define_global id (generate_lit lit) module_)
-      | _ -> ignore (generate_generic_valpredecl id t))
+      | _ -> ignore (generate_generic_valpredecl id t e))
     | GTypeDecl (id, _) -> generate_generic_typepredecl id
   in
   ignore (Llvm.declare_function "read_int" (Llvm.function_type int_t [||]) module_);
