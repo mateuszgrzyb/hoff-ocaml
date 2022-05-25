@@ -47,8 +47,8 @@
 
 // %nonassoc ERROR
 %left ARG
+%left IFTHENELSE LETIN LAMBDA
 %left CHAIN
-%right IFTHENELSE LETIN LAMBDA
 %left  CONV
 %left  OP 
 %left  AND

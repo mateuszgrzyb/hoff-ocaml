@@ -330,7 +330,7 @@ let generate (name : string) (ds : g_decl_t list) =
     match lit with
     | Int i -> Llvm.const_int (get_llvm_t IntT) i
     | Bool b -> Llvm.const_int (get_llvm_t BoolT) (if b then 1 else 0)
-    | Float f -> Llvm.const_float (get_llvm_t IntT) f
+    | Float f -> Llvm.const_float (get_llvm_t FloatT) f
     | String s -> generate_string s
     | Lambda (args, result, body) -> generate_lambda args result body
   (* misc *)

@@ -1,75 +1,20 @@
-# 
-# fun s1 (): String =
-#     "string1"
-# 
-# val i1: Int =
-#     1
-# 
-# val s2: String =
-#     "string2"
-# 
 
-# fun test1 (): Int =
-#     let
-#         fun local1 (): Int =
-#             let 
-#                 fun local3 (): Int =
-#                     0
-#                 in
-#             local2 ()
-#         fun local2 (): Int =
-#             local1 ()
-#         in
-#     local1 ()
-# 
-# fun test3 (): (Int -> Int -> Int) =
-#     let 
-#         fun local1 (i: Int, j: Int): Int =
-#             i + j
-#         in
-#     local1
-# 
-# fun test4 (f: (Int -> Int -> Int)): Int =
-#     f (3, 4)
-# 
-# fun (...)(i: Int, j: Int): Int = 
-#     i - j
-# 
-# type Student
-#     | Student (Student, Int, Int)
-#     | Student1 (Int)
-#     | Student2
-# 
-# fun what (s: Student): Int = 
-#     23
-
-fun f1 (i: Int, j: Int): Int = 
-    i + j
-
-val f2: (Int -> Int -> Int) = fun (i: Int, j: Int): Int =
-    1
-
-val v1: Int = 
-    1
+fun a (): Float =
+    let
+        val test: Float = 33.3
+        in
+    test + 33.5
 
 fun main (): Int =
-    # print_int (test4 (test3 ())) ;;
-    # print_int (test4 (fun (i: Int, j: Int): Int = i + j + 1)) ;;
-    # print_int (3 ... 5) ;;
+    let 
+        val local1: Int = 34
+        val local2: Int = 
+            let
+                val locallocal1: Int = 12
+                in
+            locallocal1 + 3
+        in
+    print_string ("ala ma kota") ;;
+    print_int (local1 + local2) ;;
     0
 
-# fun main (): Int =
-# 
-#     let 
-#         fun local1 (): Int =
-#             let 
-#                 fun locallocal1 (): Int =
-#                     1
-#                 in
-#             locallocal1 ()
-#         in
-# 
-#     print_string (s1 ()) ;;
-#     print_string (s2) ;;
-#     print_int (local1 ()) ;;
-#     0
