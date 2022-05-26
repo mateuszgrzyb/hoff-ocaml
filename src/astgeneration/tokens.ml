@@ -42,5 +42,4 @@ type token =
   | END
   | LB
   | RB
-  | GET
 [@@deriving show]

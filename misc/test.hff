@@ -6,11 +6,11 @@ type Class = {
 
 fun main (): Int =
     let 
-        val c: Class = Class (
+        val c: Class = Class {
             0,
             fun (i: Int, j: Int): Int =
                 i + j
-        )
+        }
         in
-    print_int (c.(1) (1, 2)) ;;
+    print_int (c->1 (1, 2)) ;;
     0

@@ -20,7 +20,6 @@ let tid = ['A'-'Z'] (letter | digit)*
 
 let int_ = digit+
 let bool_ = "true" | "false"
-let float_ = digit* ((digit '.') | ('.' digit)) digit* 
 let float_ = (digit+ '.' digit*) | (digit* '.' digit+)
 let string_ = "\"" _* "\""
 
@@ -58,7 +57,6 @@ rule token = parse
 
   | "{" { LB }
   | "}" { RB }
-  | "." { GET }
   
   | ":"  { COLON }
   | "="  { ASSIGN }

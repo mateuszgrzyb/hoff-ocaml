@@ -34,7 +34,7 @@
 %token IF "if" THEN "then" ELSE "else"
 %token LET "let" IN "in"
 %token CASE "case"
-%token TYPE "type" BAR "|" GET "."
+%token TYPE "type" BAR "|" 
 %token CONV "::" CHAIN ";;"
 %token BEGIN "begin" END "end"
 
@@ -47,7 +47,6 @@
 
 %token EOF
 
-// %nonassoc ERROR
 %left ARG
 %left IFTHENELSE LETIN LAMBDA
 %left CHAIN
@@ -60,7 +59,6 @@
 %left  ADD SUB
 %left  MUL DIV REM
 %right NOT NEG
-%nonassoc GET
 %nonassoc CALL
 
 %type <Ast.g_decl_t list> main
@@ -121,7 +119,7 @@ expr:
   | expr "&&" expr { BinOp ($1, And, $3) }
   | expr "||" expr { BinOp ($1, Or, $3) }
 
-  | expr GET "(" INT ")" { GetOp ($1, $4) }
+  | expr "->" INT { GetOp ($1, $3) }
 
   | expr OP expr { Fun (Val(op_name $2), [$1; $3]) }
  
@@ -157,5 +155,5 @@ lit:
   | BOOL   { Bool ($1) }
   | FLOAT  { Float ($1) }
   | STRING { String ($1) }
-  | TID "(" separated_list(",", expr) ")" { Struct ($1, $3) }
+  | TID "{" separated_list(",", expr) "}" { Struct ($1, $3) }
   | FUN typed_id_list ":" type_ "=" expr %prec LAMBDA { Lambda ($2, $4, $6) }
