@@ -28,6 +28,7 @@
 
 %token LC "(" COMMA "," ARROW "->" RC ")"
 %token ASSIGN "=" COLON ":"
+%token LB "{" RB "}"
 
 %token FUN "fun" VAL "val"
 %token IF "if" THEN "then" ELSE "else"
@@ -35,6 +36,7 @@
 %token CASE "case"
 %token TYPE "type" BAR "|" GET "."
 %token CONV "::" CHAIN ";;"
+%token BEGIN "begin" END "end"
 
 %token ADD "+" SUB "-" MUL "*" DIV "/" REM "%"
 %token AND "&&" OR "||" EQ "==" NE "!="
@@ -91,6 +93,7 @@ type_:
 
 user_type:
   | "=" type_ { Alias ($2) }
+  | "=" "{" separated_list(",", type_) "}" { Record ($3) }
   | "|" separated_list("|", prod_type) { Sum ($2) }
 
 prod_type:
@@ -113,15 +116,19 @@ expr:
   | expr ">"  expr { BinOp ($1, Gt, $3) }
   | expr "!=" expr { BinOp ($1, Ne, $3) }
   | expr "==" expr { BinOp ($1, Eq, $3) }
+  
+  | expr "&&" expr { BinOp ($1, And, $3) }
+  | expr "||" expr { BinOp ($1, Or, $3) }
 
-  | expr "." INT { GetOp ($1, $3) }
+  | ID GET "(" INT ")" { GetOp ($1, $4) }
 
   | expr OP expr { Fun (op_name $2, [$1; $3]) }
-
+ 
   | expr "::" type_ { ConvOp ($1, $3) }
   | expr ";;" expr { ChainOp ($1, $3) }
 
   | "(" expr ")" { $2 }
+  | "begin" expr "end" { $2 }
   
   | "!" expr           { UnOp (Not, $2) }
   | "-" expr %prec NEG { UnOp (Neg, $2) }
@@ -149,4 +156,5 @@ lit:
   | BOOL   { Bool ($1) }
   | FLOAT  { Float ($1) }
   | STRING { String ($1) }
+  | TID "(" separated_list(",", expr) ")" { Struct ($1, $3) }
   | FUN typed_id_list ":" type_ "=" expr %prec LAMBDA { Lambda ($2, $4, $6) }

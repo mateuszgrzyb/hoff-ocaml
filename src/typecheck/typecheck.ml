@@ -37,15 +37,15 @@ let typecheck (ds : g_decl_t list) : unit =
   *)
   let vals = new hashtable "Values" in
   let funs = new hashtable "Funs" in
-  (*
-  let types = new hashtable ("Types") in
-   *)
+  let types = new hashtable "Types" in
   funs#add "read_int" ([], IntT);
   funs#add "read_bool" ([], BoolT);
   funs#add "read_float" ([], FloatT);
+  funs#add "read_string" ([], StringT);
   funs#add "print_int" ([ IntT ], IntT);
   funs#add "print_bool" ([ BoolT ], IntT);
   funs#add "print_float" ([ FloatT ], IntT);
+  funs#add "print_string" ([ StringT ], IntT);
   (* type checker for global declarations *)
   let rec check_gdecl (d : g_decl_t) : unit =
     match d with
@@ -53,7 +53,7 @@ let typecheck (ds : g_decl_t list) : unit =
     | GValDecl ((id, t), e) ->
       check_valdecl id t e;
       add_val_to_namespace id t
-    | GTypeDecl _ -> ()
+    | GTypeDecl (id, user_type) -> add_type_to_namespace id user_type
   (* type checker for local declarations *)
   and check_decl (d : decl_t) : unit =
     match d with
@@ -115,6 +115,7 @@ let typecheck (ds : g_decl_t list) : unit =
       | Add | Sub | Mul | Div -> op_from_pred (t == FloatT || t == IntT) t
       | Rem -> op_from_pred (eq_types t IntT) t
       | Lt | Le | Ge | Gt | Eq | Ne -> Some BoolT
+      | And | Or -> op_from_pred (t == BoolT) t
     in
     (* checking if types for left and right sides are equal and matching with operator *)
     match match_op lt with
@@ -138,10 +139,14 @@ let typecheck (ds : g_decl_t list) : unit =
       then t
       else raise (TypeError ("Types do not match operator " ^ show_unop_t op))
   and check_convop (_ : expr_t) (rt : type_t) : type_t = rt
-  and check_get (e : expr_t) (_i : int) : type_t =
-    let t = check_expr e in
+  and check_get (id : id_t) (i : int) : type_t =
+    let t = vals#find id in
     match t with
-    | UserT _t -> failwith "NotImplemented"
+    | UserT tid ->
+      let ut : user_type_t = types#find tid in
+      (match ut with
+      | Record types -> List.nth types i
+      | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_user_type_t ut)))
     | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_type_t t))
   (* type checker for if expression *)
   and check_if (be : expr_t) (e1 : expr_t) (e2 : expr_t) : type_t =
@@ -180,6 +185,7 @@ let typecheck (ds : g_decl_t list) : unit =
     | Bool _ -> BoolT
     | Float _ -> FloatT
     | String _ -> StringT
+    | Struct (id, _) -> UserT id
     | Lambda (args, rt, e) ->
       check_fundecl "LAMBDA FUNCTION" args rt e;
       FunT (List.map snd args, check_expr e)
@@ -234,6 +240,10 @@ let typecheck (ds : g_decl_t list) : unit =
     if Option.is_some (vals#find_opt id)
     then raise (NameError ("Value " ^ id ^ " already exists"))
     else vals#add id t
+  and add_type_to_namespace (id : id_t) (t : user_type_t) : unit =
+    if Option.is_some (types#find_opt id)
+    then raise (NameError ("Value " ^ id ^ " already exists"))
+    else types#add id t
   and check_type (t : type_t) : unit =
     match t with
     | FunT (ts, rt) ->

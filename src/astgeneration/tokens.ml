@@ -38,4 +38,9 @@ type token =
   | ARROW
   | AND
   | ADD
+  | BEGIN
+  | END
+  | LB
+  | RB
+  | GET
 [@@deriving show]

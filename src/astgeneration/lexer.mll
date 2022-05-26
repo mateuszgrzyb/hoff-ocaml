@@ -45,6 +45,9 @@ rule token = parse
   | "==" { EQ }
   | "!=" { NE }
 
+  | "&&" { AND }
+  | "||" { OR }
+
   | "::" { CONV }
   | ";;" { CHAIN }
 
@@ -52,6 +55,10 @@ rule token = parse
   | ","  { COMMA }
   | "->" { ARROW }
   | ")"  { RC }
+
+  | "{" { LB }
+  | "}" { RB }
+  | "." { GET }
   
   | ":"  { COLON }
   | "="  { ASSIGN }
@@ -70,6 +77,9 @@ rule token = parse
 
   | "type" { TYPE }
   | "|"    { BAR }
+  
+  | "begin" { BEGIN }
+  | "end" { END }
 
   | int_    { INT (int_of_string (lexeme lexbuf)) }
   | bool_   { BOOL (bool_of_string (lexeme lexbuf)) }

@@ -9,7 +9,7 @@ and expr_t =
   | UnOp of unop_t * expr_t
   | ConvOp of expr_t * type_t
   | ChainOp of expr_t * expr_t
-  | GetOp of expr_t * int
+  | GetOp of id_t * int
   | If of expr_t * expr_t * expr_t
   | Let of decl_t list * expr_t
   | Lit of lit_t
@@ -34,6 +34,7 @@ and type_t =
 and user_type_t =
   | Alias of type_t
   | Sum of prod_t list
+  | Record of type_t list
 [@@deriving show]
 
 and prod_t =
@@ -52,6 +53,7 @@ and lit_t =
   | Bool of bool
   | Float of float
   | String of string
+  | Struct of id_t * expr_t list
   | Lambda of typed_id_t list * type_t * expr_t
 [@@deriving show]
 
@@ -67,6 +69,8 @@ and binop_t =
   | Gt
   | Ne
   | Eq
+  | And
+  | Or
 [@@deriving show]
 
 and unop_t =

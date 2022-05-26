@@ -12,6 +12,7 @@ target triple = "arm64-apple-macosx12.0.0"
 @.str.6 = private unnamed_addr constant [3 x i8] c"%s\00", align 1
 @.str.7 = private unnamed_addr constant [5 x i8] c"true\00", align 1
 @.str.8 = private unnamed_addr constant [3 x i8] c"%f\00", align 1
+@read_string.s = internal global [100 x i8] zeroinitializer, align 1
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable
 define i32 @print_int(i32 %0) #0 {
@@ -109,11 +110,8 @@ define float @read_float() #0 {
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable
 define i8* @read_string() #0 {
-  %1 = alloca i8*, align 8
-  %2 = load i8*, i8** %1, align 8
-  %3 = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.6, i64 0, i64 0), i8* %2)
-  %4 = load i8*, i8** %1, align 8
-  ret i8* %4
+  %1 = call i32 (i8*, ...) @scanf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.6, i64 0, i64 0), i8* getelementptr inbounds ([100 x i8], [100 x i8]* @read_string.s, i64 0, i64 0))
+  ret i8* getelementptr inbounds ([100 x i8], [100 x i8]* @read_string.s, i64 0, i64 0)
 }
 
 attributes #0 = { noinline nounwind optnone ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="non-leaf" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="apple-a7" "target-features"="+aes,+crypto,+fp-armv8,+neon,+sha2,+zcm,+zcz" "unsafe-fp-math"="false" "use-soft-float"="false" }

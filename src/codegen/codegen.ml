@@ -2,13 +2,15 @@ open Ast
 open Funname
 open Misc
 
-let generate (name : string) (ds : g_decl_t list) =
+let generate (name : string) (ds : g_decl_t list) : string =
   let context = Llvm.global_context () in
   let module_ = Llvm.create_module context name in
   let builder = Llvm.builder context in
   let is_local = ref false in
   let inline_attr = Llvm.create_enum_attr context "alwaysinline" 0L in
-  (*let unit_t = Llvm.void_type context in*)
+  (*
+  let unit_t = Llvm.void_type context in
+     *)
   let int_t = Llvm.i64_type context in
   let bool_t = Llvm.i1_type context in
   let float_t = Llvm.double_type context in
@@ -39,7 +41,7 @@ let generate (name : string) (ds : g_decl_t list) =
     | UserT t ->
       (match Hashtbl.find_opt user_types t with
       | None -> failwith "type not found"
-      | Some t -> t)
+      | Some t -> Llvm.pointer_type t)
   (*
   and get_type (lt: Llvm.lltype): type_t = 
     if      lt = int_t    then IntT
@@ -153,6 +155,11 @@ let generate (name : string) (ds : g_decl_t list) =
     match type_ with
     | Alias _ -> ()
     | Sum [] -> failwith "Sum type error"
+    | Record [] -> failwith "Record type error"
+    | Record types ->
+      let llvm_types = types |> List.map get_llvm_t |> Array.of_list in
+      let s = Hashtbl.find user_types name in
+      Llvm.struct_set_body s llvm_types false
     | Sum prods ->
       let llvm_types = prods |> List.map generate_prod in
       let biggest_type = find_biggest_type llvm_types in
@@ -254,6 +261,7 @@ let generate (name : string) (ds : g_decl_t list) =
       | Gt -> Llvm.build_icmp Llvm.Icmp.Sgt l r "gtexpr" builder
       | Eq -> Llvm.build_icmp Llvm.Icmp.Eq lh_value rh_value "eqexpr" builder
       | Ne -> Llvm.build_icmp Llvm.Icmp.Ne lh_value rh_value "neexpr" builder
+      | _ -> failwith "int binop error"
     in
     let generate_float_binop l op r =
       match op with
@@ -271,6 +279,8 @@ let generate (name : string) (ds : g_decl_t list) =
     in
     let generate_bool_binop l op r =
       match op with
+      | And -> Llvm.build_and l r "andexpr" builder
+      | Or -> Llvm.build_or l r "orexpr" builder
       | Eq -> Llvm.build_fcmp Llvm.Fcmp.Oeq l r "eqexpr" builder
       | Ne -> Llvm.build_fcmp Llvm.Fcmp.One l r "neexpr" builder
       | _ -> failwith "bool binop error"
@@ -292,7 +302,18 @@ let generate (name : string) (ds : g_decl_t list) =
   and generate_chainop (e1 : expr_t) (e2 : expr_t) =
     ignore (generate_expr e1);
     generate_expr e2
-  and generate_getop _e _i = failwith "NotImplemented"
+  and generate_getop id i =
+    let s = generate_val id in
+    let t = s |> Llvm.type_of |> Llvm.element_type in
+    let ptr = Llvm.build_struct_gep s i "gep" builder in
+    match
+      t
+      |> Llvm.struct_element_types
+      |> Array.to_list
+      |> fun l -> List.nth l i |> Llvm.classify_type
+    with
+    | Llvm.TypeKind.Struct | Llvm.TypeKind.Function -> ptr
+    | _ -> Llvm.build_load ptr "load" builder
   and generate_lambda args result body =
     let bb = Llvm.insertion_block builder in
     let name = lambda_name#generate in
@@ -327,11 +348,23 @@ let generate (name : string) (ds : g_decl_t list) =
     Llvm.build_call f llvm_args "callexpr" builder
   and generate_lit (lit : lit_t) =
     let generate_string s = Llvm.build_global_stringptr s "string" builder in
+    let generate_struct (id : id_t) (vals : expr_t list) =
+      let t = Hashtbl.find user_types id in
+      let s = Llvm.build_malloc t "malloc" builder in
+      List.iteri
+        (fun i val_ ->
+          let val_ = generate_expr val_ in
+          let p = Llvm.build_struct_gep s i "gep" builder in
+          ignore (Llvm.build_store val_ p builder))
+        vals;
+      s
+    in
     match lit with
     | Int i -> Llvm.const_int (get_llvm_t IntT) i
     | Bool b -> Llvm.const_int (get_llvm_t BoolT) (if b then 1 else 0)
     | Float f -> Llvm.const_float (get_llvm_t FloatT) f
     | String s -> generate_string s
+    | Struct (id, vals) -> generate_struct id vals
     | Lambda (args, result, body) -> generate_lambda args result body
   (* misc *)
   and global_predeclare (d : g_decl_t) : unit =
@@ -358,6 +391,13 @@ let generate (name : string) (ds : g_decl_t list) =
     (Llvm.declare_function
        "print_string"
        (Llvm.function_type int_t [| string_t |])
+       module_);
+  ignore
+    (Llvm.declare_function
+       "GC_malloc"
+       (Llvm.function_type
+          (Llvm.pointer_type (Llvm.i8_type context))
+          [| Llvm.i64_type context |])
        module_);
   (*
   Llvm.set_target_triple "x86_64-pc-linux-gnu" module_;
