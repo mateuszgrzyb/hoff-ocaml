@@ -9,12 +9,12 @@ and expr_t =
   | UnOp of unop_t * expr_t
   | ConvOp of expr_t * type_t
   | ChainOp of expr_t * expr_t
-  | GetOp of id_t * int
+  | GetOp of expr_t * int
   | If of expr_t * expr_t * expr_t
   | Let of decl_t list * expr_t
   | Lit of lit_t
   | Val of string
-  | Fun of string * expr_t list
+  | Fun of expr_t * expr_t list
 [@@deriving show]
 
 and decl_t =

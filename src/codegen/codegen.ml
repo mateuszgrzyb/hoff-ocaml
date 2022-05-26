@@ -88,7 +88,7 @@ let predeclare_stdlib (c : context_t) : unit =
     ; "print_bool", [| c.types.bool |], c.types.int
     ; "print_float", [| c.types.float |], c.types.int
     ; "print_string", [| c.types.string |], c.types.int
-    ; "GC_malloc", [| Llvm.i64_type c.c |], c.c |> Llvm.i8_type |> Llvm.pointer_type
+    ; "GC_malloc", [| Llvm.i32_type c.c |], c.c |> Llvm.i8_type |> Llvm.pointer_type
     ]
 ;;
 
@@ -98,6 +98,9 @@ let rec generate (name : string) (ds : g_decl_t list) : string =
   Llvm.set_target_triple "arm64-apple-macosx12.0.0" c.m;
   List.iter (generate_g_predecl c) ds;
   List.iter (generate_g_decl c) ds;
+  Llvm.replace_all_uses_with
+    (Llvm.lookup_function "malloc" c.m |> Option.get)
+    (Llvm.lookup_function "GC_malloc" c.m |> Option.get);
   match Llvm_analysis.verify_module c.m with
   | None -> Llvm.string_of_llmodule c.m
   | Some error -> error
@@ -290,6 +293,7 @@ and generate_if (c : context_t) (bexpr : expr_t) (expr1 : expr_t) (expr2 : expr_
   phi
 
 and generate_let (c : context_t) (decls : decl_t list) (expr : expr_t) : Llvm.llvalue =
+  (* predeclare *)
   let predeclare (d : decl_t) : unit =
     match d with
     | FunDecl (name, ts, rt, _) ->
@@ -299,6 +303,7 @@ and generate_let (c : context_t) (decls : decl_t list) (expr : expr_t) : Llvm.ll
         (generate_generic_funpredecl c (get_local_name c name) ts rt)
     | ValDecl _ -> ()
   in
+  (* declare *)
   let declare (d : decl_t) : unit =
     match d with
     | ValDecl ((name, _), expr) ->
@@ -312,11 +317,13 @@ and generate_let (c : context_t) (decls : decl_t list) (expr : expr_t) : Llvm.ll
            args
            body)
   in
+  (* remove decl *)
   let remove_decl (d : decl_t) : unit =
     match d with
     | ValDecl ((name, _), _) -> Hashtbl.remove c.namespace.values name
     | FunDecl (name, _, _, _) -> Hashtbl.remove c.namespace.functions name
   in
+  (* main *)
   let let_bb = Llvm.insertion_block c.b in
   List.iter predeclare decls;
   List.iter declare decls;
@@ -325,11 +332,14 @@ and generate_let (c : context_t) (decls : decl_t list) (expr : expr_t) : Llvm.ll
   List.iter remove_decl decls;
   llvm_expr
 
-and generate_binop c lh op rh =
+and generate_binop (c : context_t) (lh : expr_t) (op : binop_t) (rh : expr_t)
+    : Llvm.llvalue
+  =
   let lh_value = generate_expr c lh in
   let rh_value = generate_expr c rh in
   let lt = Llvm.type_of lh_value in
   let rt = Llvm.type_of rh_value in
+  (* int *)
   let generate_int_binop l op r =
     match op with
     | Add -> Llvm.build_add l r "addexpr" c.b
@@ -345,6 +355,7 @@ and generate_binop c lh op rh =
     | Ne -> Llvm.build_icmp Llvm.Icmp.Ne lh_value rh_value "neexpr" c.b
     | _ -> failwith "int binop error"
   in
+  (* float *)
   let generate_float_binop l op r =
     match op with
     | Add -> Llvm.build_fadd l r "addexpr" c.b
@@ -359,6 +370,7 @@ and generate_binop c lh op rh =
     | Ne -> Llvm.build_fcmp Llvm.Fcmp.One l r "neexpr" c.b
     | _ -> failwith "float binop error"
   in
+  (* bool *)
   let generate_bool_binop l op r =
     match op with
     | And -> Llvm.build_and l r "andexpr" c.b
@@ -367,6 +379,7 @@ and generate_binop c lh op rh =
     | Ne -> Llvm.build_fcmp Llvm.Fcmp.One l r "neexpr" c.b
     | _ -> failwith "bool binop error"
   in
+  (* main *)
   if lt = c.types.int
   then generate_int_binop lh_value op rh_value
   else if lt = c.types.bool
@@ -392,12 +405,12 @@ and generate_convop (_c : context_t) (expr : expr_t) (t : type_t) : Llvm.llvalue
   | FunT _ -> failwith ""
   | UserT _ -> failwith ""
 
-and generate_chainop c (e1 : expr_t) (e2 : expr_t) =
+and generate_chainop (c : context_t) (e1 : expr_t) (e2 : expr_t) =
   ignore (generate_expr c e1);
   generate_expr c e2
 
-and generate_getop c id i =
-  let s = generate_val c id in
+and generate_getop (c : context_t) (expr : expr_t) (i : int) =
+  let s = generate_expr c expr in
   let t = s |> Llvm.type_of |> Llvm.element_type in
   let ptr = Llvm.build_struct_gep s i "gep" c.b in
   match
@@ -427,12 +440,15 @@ and generate_val c name =
           | Some f -> f
           | None -> raise Not_found)))
 
-and generate_fun c name args =
+and generate_fun (c : context_t) (expr : expr_t) (args : expr_t list) : Llvm.llvalue =
+  let f = generate_expr c expr in
+  (*
   let f =
     match Llvm.lookup_function name c.m with
     | Some f -> f
     | None -> Hashtbl.find c.namespace.functions name
   in
+     *)
   let llvm_args = Array.of_list (List.map (generate_expr c) args) in
   Llvm.build_call f llvm_args "callexpr" c.b
 

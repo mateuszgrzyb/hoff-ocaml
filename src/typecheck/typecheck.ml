@@ -139,8 +139,11 @@ let typecheck (ds : g_decl_t list) : unit =
       then t
       else raise (TypeError ("Types do not match operator " ^ show_unop_t op))
   and check_convop (_ : expr_t) (rt : type_t) : type_t = rt
-  and check_get (id : id_t) (i : int) : type_t =
+  and check_get (expr : expr_t) (i : int) : type_t =
+    let t = check_expr expr in
+    (*
     let t = vals#find id in
+       *)
     match t with
     | UserT tid ->
       let ut : user_type_t = types#find tid in
@@ -219,18 +222,26 @@ let typecheck (ds : g_decl_t list) : unit =
       )
     *)
   (* name and type checker for function call *)
-  and check_fun (id : id_t) (args : expr_t list) : type_t =
+  and check_fun (expr : expr_t) (args : expr_t list) : type_t =
     try
+      let ft = check_expr expr in
       (* checking if given function was declared in current scope *)
+      (*
       let ft = funs#find id in
+       *)
       match ft with
-      | ts, rt ->
+      | FunT (ts, rt) ->
         (* checking if given arguments match types with declared argument types *)
         if List.map check_expr args <> ts
-        then raise (TypeError ("Mismatched argument types in " ^ id ^ " function call"))
+        then
+          raise
+            (TypeError
+               ("Mismatched argument types in " ^ show_expr_t expr ^ " function call"))
         else rt
+      | _ -> raise (TypeError ("Expression " ^ show_expr_t expr ^ " is not callable"))
     with
-    | Not_found -> raise (NameError (id ^ " does not exist within this scope"))
+    | Not_found ->
+      raise (NameError (show_expr_t expr ^ " does not exist within this scope"))
   (* misc helpers *)
   and add_fun_to_namespace (id : id_t) (ts : typed_id_t list) (rt : type_t) : unit =
     if Option.is_some (funs#find_opt id)

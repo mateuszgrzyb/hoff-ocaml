@@ -61,4 +61,7 @@ let main () =
 let () = main ()
 *)
 
-let () = compile ()
+(*
+let () = compile ~debug:true ()
+   *)
+let () = compile ~debug:false ()

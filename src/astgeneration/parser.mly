@@ -61,6 +61,7 @@
 %left  MUL DIV REM
 %right NOT NEG
 %nonassoc GET
+%nonassoc CALL
 
 %type <Ast.g_decl_t list> main
 %start main
@@ -120,9 +121,9 @@ expr:
   | expr "&&" expr { BinOp ($1, And, $3) }
   | expr "||" expr { BinOp ($1, Or, $3) }
 
-  | ID GET "(" INT ")" { GetOp ($1, $4) }
+  | expr GET "(" INT ")" { GetOp ($1, $4) }
 
-  | expr OP expr { Fun (op_name $2, [$1; $3]) }
+  | expr OP expr { Fun (Val(op_name $2), [$1; $3]) }
  
   | expr "::" type_ { ConvOp ($1, $3) }
   | expr ";;" expr { ChainOp ($1, $3) }
@@ -138,7 +139,7 @@ expr:
 
   | lit { Lit ($1) }
   | ID  { Val ($1) }
-  | ID "(" separated_list(",", expr) ")" { Fun ($1, $3) }
+  | expr "(" separated_list(",", expr) ")" %prec CALL { Fun ($1, $3) }
 
 
 

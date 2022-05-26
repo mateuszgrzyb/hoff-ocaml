@@ -1,51 +1,16 @@
 
-type Student = { Int, Int }
-type Class = { Int, (Int -> Int -> Int) }
-
-fun add (i: Int, j: Int): Int = 
-    i + j
-
-val class: Class = Class ( 1, add )
-
-val adder_from_class: (Int -> Int -> Int) = class.(1)
-
-fun test (): Student =
-    Student (1, 2)
-
-fun get_from_student (s: Student): Int = 
-    s.(1)
-
-fun fizzbuzz (i: Int): Int = 
-    if i <= 0
-    then 0
-    else
-
-    begin
-        if (i % 5 == 0 && i % 3 == 0)
-        then print_string ("FizzBuzz")
-        else
-
-        if i % 5 == 0
-        then print_string ("Buzz")
-        else
-        
-        if i % 3 == 0
-        then print_string ("Fizz")
-        else
-        
-        print_int (i)
-    end ;;
-    fizzbuzz (i - 1)
-
-
+type Class = {
+    Int,
+    (Int -> Int -> Int)
+}
 
 fun main (): Int =
-    print_string ("What is your fizzbuzz?") ;;
-    let val i: Int = read_int () in
-    print_string ("Fizzbuzzing") ;;
-    fizzbuzz (i) ;;
-    print_int (get_from_student (Student (4, 5))) ;;
-    # print_int (adder_from_class (3, 4)) ;;
+    let 
+        val c: Class = Class (
+            0,
+            fun (i: Int, j: Int): Int =
+                i + j
+        )
+        in
+    print_int (c.(1) (1, 2)) ;;
     0
-    
-
