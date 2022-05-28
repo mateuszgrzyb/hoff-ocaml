@@ -23,11 +23,11 @@ val bela: String =
 fun something (): String =
     "ala ma kota"
 
-fun main (): Int =
-    print_int (ala) ;;
-    # print_string ("ala") ;;
-    # print_string (something ()) ;;
-    0
+# fun main (): Int =
+#     print_int (ala) ;;
+#     # print_string ("ala") ;;
+#     # print_string (something ()) ;;
+#     0
 
 # type Student 
 #     | Me 
