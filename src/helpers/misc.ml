@@ -14,3 +14,9 @@ let parse_pos_error (pos : int * int) (msg : string) : string =
   let line, col = pos in
   Printf.sprintf "(%d, %d): %s" line col msg
 ;;
+
+let rec find_index x lst =
+  match lst with
+  | [] -> raise (Failure "Not Found")
+  | h :: t -> if x = h then 0 else 1 + find_index x t
+;;

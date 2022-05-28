@@ -10,12 +10,16 @@ and expr_t =
   | ConvOp of expr_t * type_t
   | ChainOp of expr_t * expr_t
   | GetOp of expr_t * int
+  | NamedGetOp of expr_t * id_t
   | If of expr_t * expr_t * expr_t
+  | Case of expr_t * pm_t list
   | Let of decl_t list * expr_t
   | Lit of lit_t
   | Val of string
   | Fun of expr_t * expr_t list
 [@@deriving show]
+
+and pm_t = type_t * expr_t [@@deriving show]
 
 and decl_t =
   | FunDecl of id_t * typed_id_t list * type_t * expr_t
@@ -33,13 +37,8 @@ and type_t =
 
 and user_type_t =
   | Alias of type_t
-  | Sum of prod_t list
-  | Record of type_t list
-[@@deriving show]
-
-and prod_t =
-  | Empty of id_t
-  | Product of id_t * type_t list
+  | Record of typed_id_t list
+  | Union of type_t list
 [@@deriving show]
 
 and fun_t = type_t list * type_t [@@deriving show]
@@ -48,12 +47,15 @@ and id_t = string [@@deriving show]
 
 and typed_id_t = id_t * type_t [@@deriving show]
 
+and named_expr_t = id_t * expr_t [@@deriving show]
+
 and lit_t =
   | Int of int
   | Bool of bool
   | Float of float
   | String of string
   | Struct of id_t * expr_t list
+  | NamedStruct of id_t * named_expr_t list
   | Lambda of typed_id_t list * type_t * expr_t
 [@@deriving show]
 

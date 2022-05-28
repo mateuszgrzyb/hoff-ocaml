@@ -35,9 +35,9 @@ let typecheck (ds : g_decl_t list) : unit =
   let funs: (id_t, fun_t) Hashtbl.t = Hashtbl.create 10 in
   let types: (id_t, type_t) Hashtbl.t = Hashtbl.create 10 in
   *)
-  let vals = new hashtable "Values" in
-  let funs = new hashtable "Funs" in
-  let types = new hashtable "Types" in
+  let vals = new hashtable "Value" in
+  let funs = new hashtable "Function" in
+  let types = new hashtable "Type" in
   funs#add "read_int" ([], IntT);
   funs#add "read_bool" ([], BoolT);
   funs#add "read_float" ([], FloatT);
@@ -77,9 +77,6 @@ let typecheck (ds : g_decl_t list) : unit =
     if ne_types rt (check_expr e)
     then raise (TypeError ("Result type of function " ^ id ^ " is mismatched"));
     (* remove arguments from namespace *)
-    (*
-    List.iter (fun (i, _) -> Hashtbl.remove vals i) ts
-    *)
     List.iter (fun (i, _) -> vals#remove i) ts
   (* type checker for value declaration *)
   and check_valdecl (id : id_t) (t : type_t) (e : expr_t) : unit =
@@ -97,7 +94,9 @@ let typecheck (ds : g_decl_t list) : unit =
     | ConvOp (e, t) -> check_convop e t
     | ChainOp (_, e) -> check_expr e
     | GetOp (e, i) -> check_get e i
+    | NamedGetOp (e, n) -> check_namedget e n
     | If (be, e1, e2) -> check_if be e1 e2
+    | Case (e, pms) -> check_case e pms
     | Let (ds, e) -> check_let ds e
     | Lit lit -> check_lit lit
     | Val id -> check_val id
@@ -141,14 +140,20 @@ let typecheck (ds : g_decl_t list) : unit =
   and check_convop (_ : expr_t) (rt : type_t) : type_t = rt
   and check_get (expr : expr_t) (i : int) : type_t =
     let t = check_expr expr in
-    (*
-    let t = vals#find id in
-       *)
     match t with
     | UserT tid ->
       let ut : user_type_t = types#find tid in
       (match ut with
-      | Record types -> List.nth types i
+      | Record types -> types |> List.map snd |> fun ts -> List.nth ts i
+      | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_user_type_t ut)))
+    | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_type_t t))
+  and check_namedget (expr : expr_t) (name : id_t) : type_t =
+    let t = check_expr expr in
+    match t with
+    | UserT tid ->
+      let ut : user_type_t = types#find tid in
+      (match ut with
+      | Record types -> types |> List.find (fun (n, _) -> n = name) |> snd
       | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_user_type_t ut)))
     | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_type_t t))
   (* type checker for if expression *)
@@ -161,6 +166,13 @@ let typecheck (ds : g_decl_t list) : unit =
     if ne_types BoolT tb || ne_types t1 t2
     then raise (TypeError "Mismatched types in if expression")
     else t1
+  and check_case (e : expr_t) (pms : pm_t list) : type_t =
+    ignore (check_expr e);
+    let ts = pms |> List.map snd |> List.map check_expr in
+    let t = List.hd ts in
+    if List.fold_left (fun b e -> e = t && b) true ts
+    then t
+    else raise (TypeError "Mismatched types in case expression")
   (* type checker for let expression *)
   and check_let (ds : decl_t list) (e : expr_t) : type_t =
     (* predeclaration inside whole let scope *)
@@ -189,6 +201,7 @@ let typecheck (ds : g_decl_t list) : unit =
     | Float _ -> FloatT
     | String _ -> StringT
     | Struct (id, _) -> UserT id
+    | NamedStruct (id, _) -> UserT id
     | Lambda (args, rt, e) ->
       check_fundecl "LAMBDA FUNCTION" args rt e;
       FunT (List.map snd args, check_expr e)
