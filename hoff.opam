@@ -1,0 +1,6 @@
+opam-version: "2.0"
+name: "hoff"
+version: "0.1"
+
+depends: [ "ocaml" "core" "llvm" "sedlex" "menhir" "ppx_deriving" ]
+build: [ "dune" "build" "-p" name ]
