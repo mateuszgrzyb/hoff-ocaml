@@ -28,13 +28,15 @@
 
 %token LC "(" COMMA "," ARROW "->" RC ")"
 %token ASSIGN "=" COLON ":"
+%token LB "{" RB "}"
 
 %token FUN "fun" VAL "val"
 %token IF "if" THEN "then" ELSE "else"
 %token LET "let" IN "in"
 %token CASE "case"
-%token TYPE "type" BAR "|" GET "."
+%token TYPE "type" BAR "|" 
 %token CONV "::" CHAIN ";;"
+%token BEGIN "begin" END "end"
 
 %token ADD "+" SUB "-" MUL "*" DIV "/" REM "%"
 %token AND "&&" OR "||" EQ "==" NE "!="
@@ -45,7 +47,6 @@
 
 %token EOF
 
-// %nonassoc ERROR
 %left ARG
 %left IFTHENELSE LETIN LAMBDA
 %left CHAIN
@@ -58,7 +59,7 @@
 %left  ADD SUB
 %left  MUL DIV REM
 %right NOT NEG
-%nonassoc GET
+%nonassoc CALL
 
 %type <Ast.g_decl_t list> main
 %start main
@@ -71,11 +72,8 @@ main: list(g_decl) EOF { $1 }
 
 g_decl:
   | "fun" ID typed_id_list ":" type_ "=" expr { GFunDecl ($2, $3, $5, $7) }
-  //| FUN LC OP RC LC typed_id COMMA typed_id RC COLON type_ ASSIGN expr { GFunDecl (op_name $3, [$6;$8], $11, $13) }
   | "fun" "(" OP ")" "(" typed_id "," typed_id ")" ":" type_ "=" expr { GFunDecl (op_name $3, [$6;$8], $11, $13) }
-  //| VAL typed_id ASSIGN expr { GValDecl ($2, $4) }
   | "val" typed_id "=" expr { GValDecl ($2, $4) }
-  //| TYPE TID user_type { GTypeDecl ($2, $3) }
   | "type" TID user_type { GTypeDecl ($2, $3) }
 
 
@@ -91,11 +89,8 @@ type_:
 
 user_type:
   | "=" type_ { Alias ($2) }
-  | "|" separated_list("|", prod_type) { Sum ($2) }
-
-prod_type:
-  | TID { Empty ($1) }
-  | TID "(" separated_list(",", type_) ")" { Product ($1, $3) }
+  | "=" "{" separated_list(",", typed_id) "}" { Record ($3) }
+  | "|" separated_list("|", type_) { Union ($2) }
 
 
 /* expr_t */
@@ -113,26 +108,34 @@ expr:
   | expr ">"  expr { BinOp ($1, Gt, $3) }
   | expr "!=" expr { BinOp ($1, Ne, $3) }
   | expr "==" expr { BinOp ($1, Eq, $3) }
+  
+  | expr "&&" expr { BinOp ($1, And, $3) }
+  | expr "||" expr { BinOp ($1, Or, $3) }
 
-  | expr "." INT { GetOp ($1, $3) }
+  | expr "->" INT { GetOp ($1, $3) }
+  | expr "->" ID { NamedGetOp ($1, $3) }
 
-  | expr OP expr { Fun (op_name $2, [$1; $3]) }
-
+  | expr OP expr { Fun (Val(op_name $2), [$1; $3]) }
+ 
   | expr "::" type_ { ConvOp ($1, $3) }
   | expr ";;" expr { ChainOp ($1, $3) }
 
   | "(" expr ")" { $2 }
+  | "begin" expr "end" { $2 }
   
   | "!" expr           { UnOp (Not, $2) }
   | "-" expr %prec NEG { UnOp (Neg, $2) }
 
   | "if" expr "then" expr "else" expr %prec IFTHENELSE { If ($2, $4, $6) }
   | "let" list(decl) "in" expr %prec LETIN             { Let ($2, $4) }
+  | "case" expr list(matched_pattern) "end" %prec CASE       { Case ($2, $3) }
 
   | lit { Lit ($1) }
   | ID  { Val ($1) }
-  | ID "(" separated_list(",", expr) ")" { Fun ($1, $3) }
+  | expr "(" separated_list(",", expr) ")" %prec CALL { Fun ($1, $3) }
 
+matched_pattern:
+  | "|" type_ "->" expr { ($2, $4) }
 
 
 // decl_t
@@ -144,9 +147,14 @@ decl:
 
 /* lit_t */
 
+named_expr:
+  | ID "=" expr { ($1, $3) }
+
 lit:
   | INT    { Int ($1) }
   | BOOL   { Bool ($1) }
   | FLOAT  { Float ($1) }
   | STRING { String ($1) }
+  | TID "(" separated_list(",", expr) ")" { Struct ($1, $3) }
+  | TID "{" separated_list(",", named_expr) "}" { NamedStruct ($1, $3) }
   | FUN typed_id_list ":" type_ "=" expr %prec LAMBDA { Lambda ($2, $4, $6) }

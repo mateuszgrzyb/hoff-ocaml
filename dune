@@ -17,7 +17,18 @@
 
 (executable
  (name main)
- (libraries core llvm llvm.analysis sedlex sedlex.ppx menhirLib)
+ (libraries
+  core
+  llvm
+  llvm.analysis
+  llvm.linker
+  llvm.target
+  llvm.irreader
+  llvm.all_backends
+  llvm.ipo
+  sedlex
+  sedlex.ppx
+  menhirLib)
  (preprocess
   (pps ppx_deriving.show sedlex.ppx)))
 

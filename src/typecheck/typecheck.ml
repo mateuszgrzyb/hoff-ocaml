@@ -35,17 +35,17 @@ let typecheck (ds : g_decl_t list) : unit =
   let funs: (id_t, fun_t) Hashtbl.t = Hashtbl.create 10 in
   let types: (id_t, type_t) Hashtbl.t = Hashtbl.create 10 in
   *)
-  let vals = new hashtable "Values" in
-  let funs = new hashtable "Funs" in
-  (*
-  let types = new hashtable ("Types") in
-   *)
+  let vals = new hashtable "Value" in
+  let funs = new hashtable "Function" in
+  let types = new hashtable "Type" in
   funs#add "read_int" ([], IntT);
   funs#add "read_bool" ([], BoolT);
   funs#add "read_float" ([], FloatT);
+  funs#add "read_string" ([], StringT);
   funs#add "print_int" ([ IntT ], IntT);
   funs#add "print_bool" ([ BoolT ], IntT);
   funs#add "print_float" ([ FloatT ], IntT);
+  funs#add "print_string" ([ StringT ], IntT);
   (* type checker for global declarations *)
   let rec check_gdecl (d : g_decl_t) : unit =
     match d with
@@ -53,7 +53,7 @@ let typecheck (ds : g_decl_t list) : unit =
     | GValDecl ((id, t), e) ->
       check_valdecl id t e;
       add_val_to_namespace id t
-    | GTypeDecl _ -> ()
+    | GTypeDecl (id, user_type) -> add_type_to_namespace id user_type
   (* type checker for local declarations *)
   and check_decl (d : decl_t) : unit =
     match d with
@@ -77,9 +77,6 @@ let typecheck (ds : g_decl_t list) : unit =
     if ne_types rt (check_expr e)
     then raise (TypeError ("Result type of function " ^ id ^ " is mismatched"));
     (* remove arguments from namespace *)
-    (*
-    List.iter (fun (i, _) -> Hashtbl.remove vals i) ts
-    *)
     List.iter (fun (i, _) -> vals#remove i) ts
   (* type checker for value declaration *)
   and check_valdecl (id : id_t) (t : type_t) (e : expr_t) : unit =
@@ -97,7 +94,9 @@ let typecheck (ds : g_decl_t list) : unit =
     | ConvOp (e, t) -> check_convop e t
     | ChainOp (_, e) -> check_expr e
     | GetOp (e, i) -> check_get e i
+    | NamedGetOp (e, n) -> check_namedget e n
     | If (be, e1, e2) -> check_if be e1 e2
+    | Case (e, pms) -> check_case e pms
     | Let (ds, e) -> check_let ds e
     | Lit lit -> check_lit lit
     | Val id -> check_val id
@@ -115,6 +114,7 @@ let typecheck (ds : g_decl_t list) : unit =
       | Add | Sub | Mul | Div -> op_from_pred (t == FloatT || t == IntT) t
       | Rem -> op_from_pred (eq_types t IntT) t
       | Lt | Le | Ge | Gt | Eq | Ne -> Some BoolT
+      | And | Or -> op_from_pred (t == BoolT) t
     in
     (* checking if types for left and right sides are equal and matching with operator *)
     match match_op lt with
@@ -138,10 +138,23 @@ let typecheck (ds : g_decl_t list) : unit =
       then t
       else raise (TypeError ("Types do not match operator " ^ show_unop_t op))
   and check_convop (_ : expr_t) (rt : type_t) : type_t = rt
-  and check_get (e : expr_t) (_i : int) : type_t =
-    let t = check_expr e in
+  and check_get (expr : expr_t) (i : int) : type_t =
+    let t = check_expr expr in
     match t with
-    | UserT _t -> failwith "NotImplemented"
+    | UserT tid ->
+      let ut : user_type_t = types#find tid in
+      (match ut with
+      | Record types -> types |> List.map snd |> fun ts -> List.nth ts i
+      | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_user_type_t ut)))
+    | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_type_t t))
+  and check_namedget (expr : expr_t) (name : id_t) : type_t =
+    let t = check_expr expr in
+    match t with
+    | UserT tid ->
+      let ut : user_type_t = types#find tid in
+      (match ut with
+      | Record types -> types |> List.find (fun (n, _) -> n = name) |> snd
+      | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_user_type_t ut)))
     | _ -> raise (TypeError ("Cannot dereference value of type " ^ show_type_t t))
   (* type checker for if expression *)
   and check_if (be : expr_t) (e1 : expr_t) (e2 : expr_t) : type_t =
@@ -153,6 +166,13 @@ let typecheck (ds : g_decl_t list) : unit =
     if ne_types BoolT tb || ne_types t1 t2
     then raise (TypeError "Mismatched types in if expression")
     else t1
+  and check_case (e : expr_t) (pms : pm_t list) : type_t =
+    ignore (check_expr e);
+    let ts = pms |> List.map snd |> List.map check_expr in
+    let t = List.hd ts in
+    if List.fold_left (fun b e -> e = t && b) true ts
+    then t
+    else raise (TypeError "Mismatched types in case expression")
   (* type checker for let expression *)
   and check_let (ds : decl_t list) (e : expr_t) : type_t =
     (* predeclaration inside whole let scope *)
@@ -180,6 +200,8 @@ let typecheck (ds : g_decl_t list) : unit =
     | Bool _ -> BoolT
     | Float _ -> FloatT
     | String _ -> StringT
+    | Struct (id, _) -> UserT id
+    | NamedStruct (id, _) -> UserT id
     | Lambda (args, rt, e) ->
       check_fundecl "LAMBDA FUNCTION" args rt e;
       FunT (List.map snd args, check_expr e)
@@ -213,18 +235,26 @@ let typecheck (ds : g_decl_t list) : unit =
       )
     *)
   (* name and type checker for function call *)
-  and check_fun (id : id_t) (args : expr_t list) : type_t =
+  and check_fun (expr : expr_t) (args : expr_t list) : type_t =
     try
+      let ft = check_expr expr in
       (* checking if given function was declared in current scope *)
+      (*
       let ft = funs#find id in
+       *)
       match ft with
-      | ts, rt ->
+      | FunT (ts, rt) ->
         (* checking if given arguments match types with declared argument types *)
         if List.map check_expr args <> ts
-        then raise (TypeError ("Mismatched argument types in " ^ id ^ " function call"))
+        then
+          raise
+            (TypeError
+               ("Mismatched argument types in " ^ show_expr_t expr ^ " function call"))
         else rt
+      | _ -> raise (TypeError ("Expression " ^ show_expr_t expr ^ " is not callable"))
     with
-    | Not_found -> raise (NameError (id ^ " does not exist within this scope"))
+    | Not_found ->
+      raise (NameError (show_expr_t expr ^ " does not exist within this scope"))
   (* misc helpers *)
   and add_fun_to_namespace (id : id_t) (ts : typed_id_t list) (rt : type_t) : unit =
     if Option.is_some (funs#find_opt id)
@@ -234,6 +264,10 @@ let typecheck (ds : g_decl_t list) : unit =
     if Option.is_some (vals#find_opt id)
     then raise (NameError ("Value " ^ id ^ " already exists"))
     else vals#add id t
+  and add_type_to_namespace (id : id_t) (t : user_type_t) : unit =
+    if Option.is_some (types#find_opt id)
+    then raise (NameError ("Value " ^ id ^ " already exists"))
+    else types#add id t
   and check_type (t : type_t) : unit =
     match t with
     | FunT (ts, rt) ->

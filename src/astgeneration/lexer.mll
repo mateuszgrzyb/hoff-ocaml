@@ -20,7 +20,6 @@ let tid = ['A'-'Z'] (letter | digit)*
 
 let int_ = digit+
 let bool_ = "true" | "false"
-let float_ = digit* ((digit '.') | ('.' digit)) digit* 
 let float_ = (digit+ '.' digit*) | (digit* '.' digit+)
 let string_ = "\"" _* "\""
 
@@ -45,6 +44,9 @@ rule token = parse
   | "==" { EQ }
   | "!=" { NE }
 
+  | "&&" { AND }
+  | "||" { OR }
+
   | "::" { CONV }
   | ";;" { CHAIN }
 
@@ -52,6 +54,9 @@ rule token = parse
   | ","  { COMMA }
   | "->" { ARROW }
   | ")"  { RC }
+
+  | "{" { LB }
+  | "}" { RB }
   
   | ":"  { COLON }
   | "="  { ASSIGN }
@@ -70,6 +75,9 @@ rule token = parse
 
   | "type" { TYPE }
   | "|"    { BAR }
+  
+  | "begin" { BEGIN }
+  | "end" { END }
 
   | int_    { INT (int_of_string (lexeme lexbuf)) }
   | bool_   { BOOL (bool_of_string (lexeme lexbuf)) }

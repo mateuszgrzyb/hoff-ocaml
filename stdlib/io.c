@@ -47,7 +47,8 @@ float read_float() {
 }
 
 string read_string() {
-    string s;
+    static char s[100];
+    // string s;
     scanf("%s", s);
     return s;
 }

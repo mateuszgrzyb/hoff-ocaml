@@ -1,0 +1,16 @@
+
+
+fun main (): Int = begin
+    let 
+        val c: Class = Class {
+            f = fun (i: Int, j: Int): Int = 
+                i + j,
+            i = 0
+        }
+        in
+    print_int (c->1 (1, 2)) ;;
+    print_int (c->f (3, 77)) ;;
+    0
+end
+
+

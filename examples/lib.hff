@@ -1,0 +1,6 @@
+
+
+type Class = {
+    i: Int,
+    f: (Int -> Int -> Int)
+}
