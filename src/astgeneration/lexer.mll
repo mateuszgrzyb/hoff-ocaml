@@ -15,8 +15,11 @@ let op = ['!' '@' '$' '%' '^' '&' '*' '-' '+' '>' '<' '=' ':' '|' '?' '.']+
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z' '_']
 
-let id = ['a'-'z' '_'] (letter | digit)*
-let tid = ['A'-'Z'] (letter | digit)*
+let id_ = ['a'-'z' '_'] (letter | digit)*
+let tid_ = ['A'-'Z'] (letter | digit)*
+
+let id = id_ ('.' id_)*
+let tid = tid_ ('.' tid_)*
 
 let int_ = digit+
 let bool_ = "true" | "false"
@@ -79,12 +82,16 @@ rule token = parse
   | "begin" { BEGIN }
   | "end" { END }
 
+  | "from" { FROM }
+  | "import" { IMPORT }
+
   | int_    { INT (int_of_string (lexeme lexbuf)) }
   | bool_   { BOOL (bool_of_string (lexeme lexbuf)) }
   | float_  { FLOAT (float_of_string (lexeme lexbuf)) }
   
   | op  { OP (lexeme lexbuf) }
-  
+
+
   | id  { ID (lexeme lexbuf) }
   | tid { TID (lexeme lexbuf) }
 

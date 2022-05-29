@@ -168,12 +168,8 @@ and generate_g_predecl (c : context_t) (m : Llvm.llmodule) (d : g_decl_t) : unit
   let generate_g_funpredecl (name : id_t) (args : typed_id_t list) (result : type_t)
       : unit
     =
-    let arg_types =
-      args |> List.map (fun tid -> tid |> snd |> get_llvm_t c) |> Array.of_list
-    in
-    let r_type = get_llvm_t c result in
-    let f_t = Llvm.function_type r_type arg_types in
-    Hashtbl.add c.namespace.functions name (Llvm.declare_function name f_t m)
+    let f = generate_generic_funpredecl c m name args result in
+    Hashtbl.add c.namespace.functions name f
   in
   (* val *)
   let generate_g_valpredecl (name : id_t) (type_ : type_t) (expr : expr_t) : unit =
@@ -207,6 +203,7 @@ and generate_g_predecl (c : context_t) (m : Llvm.llmodule) (d : g_decl_t) : unit
   in
   (* main *)
   match d with
+  | Import _ -> ()
   | GFunDecl (id, ts, rt, _) -> generate_g_funpredecl id ts rt
   | GValDecl ((id, t), e) ->
     (match e with
@@ -228,12 +225,16 @@ and generate_g_decl (c : context_t) (m : Llvm.llmodule) (d : g_decl_t) : unit =
     ignore (generate_generic_fundecl c m f name args expr)
   in
   (* fun *)
-  let generate_g_fundecl name args result body =
+  let generate_g_fundecl name args _result body =
+    (*
     let f = generate_generic_funpredecl c m name args result in
+       *)
+    let f = Hashtbl.find c.namespace.functions name in
     ignore (generate_generic_fundecl c m f name args body)
   in
   (* main *)
   match d with
+  | Import _ -> ()
   | GTypeDecl _ -> ()
   | GFunDecl (name, args, return, body) -> generate_g_fundecl name args return body
   | GValDecl ((name, type_), expr) ->

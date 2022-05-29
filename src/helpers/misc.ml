@@ -1,3 +1,5 @@
+open Printf
+
 let rec zip a b =
   match a, b with
   | [], [] -> []
@@ -12,7 +14,7 @@ let get_lexing_position lexbuf : int * int =
 
 let parse_pos_error (pos : int * int) (msg : string) : string =
   let line, col = pos in
-  Printf.sprintf "(%d, %d): %s" line col msg
+  sprintf "(%d, %d): %s" line col msg
 ;;
 
 let rec find_index x lst =

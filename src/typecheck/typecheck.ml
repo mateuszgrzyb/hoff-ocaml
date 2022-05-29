@@ -49,6 +49,7 @@ let typecheck (ds : g_decl_t list) : unit =
   (* type checker for global declarations *)
   let rec check_gdecl (d : g_decl_t) : unit =
     match d with
+    | Import _ -> ()
     | GFunDecl (id, ts, rt, e) -> check_fundecl id ts rt e
     | GValDecl ((id, t), e) ->
       check_valdecl id t e;

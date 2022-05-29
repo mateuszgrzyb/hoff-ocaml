@@ -1,27 +1,27 @@
 
-fun f1 (): Int =
-    f2 ()
-
-fun f2 (): Int = 
-    f1 ()
-
-fun locals (): Int =
-    let
-        fun ff1 (): Int =
-            1
-        fun ff2 (): Int =
-            ff1 ()
-    in
-        0
-
-val ala: Int  = 
-    1 + 2
-
-val bela: String =
-    "s"
-
-fun something (): String =
-    "ala ma kota"
+# fun f1 (): Int =
+#     f2 ()
+# 
+# fun f2 (): Int = 
+#     f1 ()
+# 
+# fun locals (): Int =
+#     let
+#         fun ff1 (): Int =
+#             1
+#         fun ff2 (): Int =
+#             ff1 ()
+#     in
+#         0
+# 
+# val ala: Int  = 
+#     1 + 2
+# 
+# val bela: String =
+#     "s"
+# 
+# fun something (): String =
+#     "ala ma kota"
 
 # fun main (): Int =
 #     print_int (ala) ;;

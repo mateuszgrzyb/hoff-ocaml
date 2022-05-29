@@ -1,4 +1,5 @@
 
+from example.lib.types import Class
 
 fun main (): Int = begin
     let 

@@ -18,6 +18,7 @@
 
 %}
 
+%token <string> NAME
 %token <string> ID
 %token <string> TID
 
@@ -37,6 +38,7 @@
 %token TYPE "type" BAR "|" 
 %token CONV "::" CHAIN ";;"
 %token BEGIN "begin" END "end"
+%token FROM "from" IMPORT "import"
 
 %token ADD "+" SUB "-" MUL "*" DIV "/" REM "%"
 %token AND "&&" OR "||" EQ "==" NE "!="
@@ -66,9 +68,13 @@
 
 %%
 
-main: list(g_decl) EOF { $1 }
+main: list(import) list(g_decl) EOF { $1 @ $2 }
 
 // g_decl_t
+
+import:
+  | "from" ID "import" ID { Import ($2, $4) }
+  | "from" ID "import" TID { Import ($2, $4) }
 
 g_decl:
   | "fun" ID typed_id_list ":" type_ "=" expr { GFunDecl ($2, $3, $5, $7) }

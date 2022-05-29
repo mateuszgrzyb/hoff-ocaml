@@ -1,4 +1,7 @@
-type g_decl_t =
+type module_t = g_decl_t list [@@deriving show]
+
+and g_decl_t =
+  | Import of string * id_t
   | GFunDecl of id_t * typed_id_t list * type_t * expr_t
   | GValDecl of typed_id_t * expr_t
   | GTypeDecl of id_t * user_type_t

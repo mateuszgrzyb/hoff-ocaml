@@ -1,6 +1,7 @@
 type args_t =
   { input_files : string list
   ; output_file : string
+  ; workdir : string
   ; emit_llvm : bool
   ; no_opt : bool
   ; ext_list : string list
@@ -19,9 +20,13 @@ let rec get_all_files (dir : string) : string list =
 ;;
 
 let generate_input_files (workdir : string) (files : string list) : string list =
+  let files =
+    if files = [] && workdir != ""
+    then [ workdir ]
+    else List.map (Filename.concat workdir) files
+  in
   let input_files =
     files
-    |> List.map (Filename.concat workdir)
     |> List.map get_all_files
     |> List.flatten
     |> List.filter (fun file -> Filename.extension file = ".hff")
@@ -57,6 +62,7 @@ let parse () : args_t =
   Arg.parse spec_list pos_args usage_msg;
   { input_files = !input_files |> generate_input_files !workdir
   ; output_file = !output_file
+  ; workdir = !workdir
   ; emit_llvm = !emit_llvm
   ; no_opt = !no_opt
   ; ext_list = !ext_list |> generate_ext_list

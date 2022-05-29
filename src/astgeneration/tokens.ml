@@ -42,4 +42,7 @@ type token =
   | END
   | LB
   | RB
+  | FROM
+  | IMPORT
+  | NAME of string
 [@@deriving show]
