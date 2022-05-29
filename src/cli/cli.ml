@@ -1,43 +1,67 @@
+open Core
+open Printf
+
+type ext_t =
+  | Hoff
+  | IR
+
+type file_t =
+  { name : string
+  ; ext : ext_t
+  }
+
 type args_t =
-  { input_files : string list
+  { input_files : file_t list
   ; output_file : string
   ; workdir : string
   ; emit_llvm : bool
   ; no_opt : bool
-  ; ext_list : string list
   }
 
 let rec get_all_files (dir : string) : string list =
-  if dir |> Sys.is_directory |> not
-  then [ dir ]
-  else
+  match dir |> Sys.is_directory with
+  | `No -> [ dir ]
+  | _ ->
     dir
     |> Sys.readdir
     |> Array.to_list
-    |> List.map (Filename.concat dir)
-    |> List.map get_all_files
-    |> List.flatten
+    |> List.map ~f:(Filename.concat dir)
+    |> List.map ~f:get_all_files
+    |> List.concat
 ;;
 
-let generate_input_files (workdir : string) (files : string list) : string list =
+let generate_input_files (workdir : string) (files : string list) : file_t list =
   let files =
-    if files = [] && workdir != ""
+    if phys_equal files [] && not (phys_equal workdir "")
     then [ workdir ]
-    else List.map (Filename.concat workdir) files
+    else List.map ~f:(Filename.concat workdir) files
+  in
+  let is_hoff_file (file : string) : file_t option =
+    Printf.eprintf "file: %s\n" file;
+    Printf.eprintf
+      "ext: %s\n"
+      (file |> Filename.split_extension |> snd |> fun s -> Option.value s ~default:"none");
+    match file |> Filename.split_extension |> snd with
+    | Some "hff" -> Some { name = file; ext = Hoff }
+    | Some "ir" -> Some { name = file; ext = IR }
+    | _ -> None
   in
   let input_files =
-    files
-    |> List.map get_all_files
-    |> List.flatten
-    |> List.filter (fun file -> Filename.extension file = ".hff")
+    files |> List.map ~f:get_all_files |> List.concat |> List.filter_map ~f:is_hoff_file
   in
   match input_files with
-  | [] -> Errors.CLIError "Input files list is empty" |> raise
+  | [] ->
+    files
+    |> String.concat ~sep:"\n"
+    |> sprintf "Input files list is empty.\nWorkdir: %s\nInput files: \n%s\n" workdir
+    |> fun s -> Errors.CLIError s |> raise
   | _ -> input_files
 ;;
 
 let generate_ext_list (ext_list : string list) : string list =
-  ext_list |> List.map (fun ext -> if String.sub ext 0 1 = "." then ext else "." ^ ext)
+  ext_list
+  |> List.map ~f:(fun ext ->
+         if phys_equal (String.slice ext 0 1) "." then ext else "." ^ ext)
 ;;
 
 let parse () : args_t =
@@ -65,6 +89,5 @@ let parse () : args_t =
   ; workdir = !workdir
   ; emit_llvm = !emit_llvm
   ; no_opt = !no_opt
-  ; ext_list = !ext_list |> generate_ext_list
   }
 ;;
