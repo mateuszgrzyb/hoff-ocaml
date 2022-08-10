@@ -1,31 +1,28 @@
+open Core
 open Printf
-module StringSet = Set.Make (String)
 
 module Helpers = struct
   let stdio_names =
-    List.fold_right
-      StringSet.add
-      [ "read_int"
-      ; "read_bool"
-      ; "read_float"
-      ; "read_string"
-      ; "print_int"
-      ; "print_bool"
-      ; "print_float"
-      ; "print_string"
-      ; "GC_malloc"
-      ; "main"
-      ]
-      StringSet.empty
+    [ "read_int"
+    ; "read_bool"
+    ; "read_float"
+    ; "read_string"
+    ; "print_int"
+    ; "print_bool"
+    ; "print_float"
+    ; "print_string"
+    ; "GC_malloc"
+    ; "main"
+    ]
   ;;
 
-  let imported_names = Hashtbl.create 10
+  let imported_names = Hashtbl.create ~growth_allowed:true ~size:10 (module String)
 
   let qualify_id (name : string) (id : Ast.id_t) : Ast.id_t =
-    if StringSet.mem id stdio_names || String.contains id '.'
+    if List.exists stdio_names ~f:(fun e -> String.equal e id) || String.contains id '.'
     then id
     else (
-      let imported_name = Hashtbl.find_opt imported_names id in
+      let imported_name = Hashtbl.find imported_names id in
       match imported_name with
       | None -> sprintf "%s.%s" name id
       | Some name -> sprintf "%s.%s" name id)
@@ -38,16 +35,16 @@ module Helpers = struct
   ;;
 
   let qualify_arg_types (name : string) (ts : Ast.typed_id_t list) : Ast.typed_id_t list =
-    ts |> List.map (fun (id, t) -> qualify_id name id, qualify_type name t)
+    ts |> List.map ~f:(fun (id, t) -> qualify_id name id, qualify_type name t)
   ;;
 end
 
 let rec qualify_module (name : string) (ds : Ast.g_decl_t list) : Ast.g_decl_t list =
-  List.map (qualify_g_decl name) ds
+  ds |> List.map ~f:(qualify_g_decl name)
 
 and qualify_g_decl (name : string) (d : Ast.g_decl_t) : Ast.g_decl_t =
   let qualify_import (module_ : string) (id : Ast.id_t) : Ast.g_decl_t =
-    Hashtbl.add Helpers.imported_names id module_;
+    Hashtbl.set Helpers.imported_names ~key:id ~data:module_;
     Ast.Import (module_, id)
   in
   let qualify_g_fundecl
@@ -123,11 +120,11 @@ and qualify_expr (name : string) (expr : Ast.expr_t) : Ast.expr_t =
       p, m
     in
     let expr = qualify_expr name expr in
-    let pms = pms |> List.map qualify_pattern in
+    let pms = pms |> List.map ~f:qualify_pattern in
     Ast.Case (expr, pms)
   in
   let qualify_let (ds : Ast.decl_t list) (expr : Ast.expr_t) : Ast.expr_t =
-    let ds = ds |> List.map (qualify_decl name) in
+    let ds = ds |> List.map ~f:(qualify_decl name) in
     let expr = qualify_expr name expr in
     Ast.Let (ds, expr)
   in
@@ -140,7 +137,7 @@ and qualify_expr (name : string) (expr : Ast.expr_t) : Ast.expr_t =
         : Ast.lit_t
       =
       let id = Helpers.qualify_id name id in
-      let namedargs = namedargs |> List.map (fun (n, e) -> n, qualify_expr name e) in
+      let namedargs = namedargs |> List.map ~f:(fun (n, e) -> n, qualify_expr name e) in
       Ast.NamedStruct (id, namedargs)
     in
     let qualify_lambda (ts : Ast.typed_id_t list) (rt : Ast.type_t) (body : Ast.expr_t)
@@ -166,7 +163,7 @@ and qualify_expr (name : string) (expr : Ast.expr_t) : Ast.expr_t =
   in
   let qualify_fun (f : Ast.expr_t) (args : Ast.expr_t list) : Ast.expr_t =
     let f = qualify_expr name f in
-    let args = args |> List.map (qualify_expr name) in
+    let args = args |> List.map ~f:(qualify_expr name) in
     Ast.Fun (f, args)
   in
   match expr with

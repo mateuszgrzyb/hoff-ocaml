@@ -1,6 +1,21 @@
 open Ast
 open Funname
 open Misc
+open Core
+
+module LLVMType = struct
+  type t = Llvm.lltype
+
+  let hash (t : Llvm.lltype) : int = t |> Llvm.string_of_lltype |> String.hash
+
+  let compare (t1 : Llvm.lltype) (t2 : Llvm.lltype) : int =
+    let t1 = Llvm.string_of_lltype t1 in
+    let t2 = Llvm.string_of_lltype t2 in
+    String.compare t1 t2
+  ;;
+
+  let sexp_of_t (t : Llvm.lltype) : Sexp.t = t |> Llvm.string_of_lltype |> Sexp.of_string
+end
 
 type types_t =
   { int : Llvm.lltype
@@ -34,7 +49,7 @@ let global_name = "$HOFF_GLOBAL_"
 let lambda_name = new fun_name "$HOFF_LAMBDA_"
 
 let get_local_name (c : context_t) (name : id_t) : id_t =
-  name :: c.parent_name |> List.rev |> String.concat "$" |> fun s -> "$" ^ s ^ "$"
+  name :: c.parent_name |> List.rev |> String.concat ~sep:"$" |> fun s -> "$" ^ s ^ "$"
 ;;
 
 let rec get_llvm_t (c : context_t) (t : type_t) : Llvm.lltype =
@@ -43,9 +58,9 @@ let rec get_llvm_t (c : context_t) (t : type_t) : Llvm.lltype =
   | BoolT -> c.types.bool
   | FloatT -> c.types.float
   | StringT -> c.types.string
-  | FunT (ts, rt) -> c.types.fn (List.map (get_llvm_t c) ts) (get_llvm_t c rt)
+  | FunT (ts, rt) -> c.types.fn (List.map ~f:(get_llvm_t c) ts) (get_llvm_t c rt)
   | UserT t ->
-    (match Hashtbl.find_opt c.namespace.types t with
+    (match Hashtbl.find c.namespace.types t with
     | None -> failwith "type not found"
     | Some t -> Llvm.pointer_type t)
 ;;
@@ -66,11 +81,11 @@ let initialize () : context_t =
   ; types =
       { int = int_t; bool = bool_t; float = float_t; string = string_t; fn = function_t }
   ; namespace =
-      { functions = Hashtbl.create 10
-      ; values = Hashtbl.create 10
-      ; types = Hashtbl.create 10
-      ; record_names = Hashtbl.create 10
-      ; union_types = Hashtbl.create 10
+      { functions = Hashtbl.create ~growth_allowed:true ~size:10 (module String)
+      ; values = Hashtbl.create ~growth_allowed:true ~size:10 (module String)
+      ; types = Hashtbl.create ~growth_allowed:true ~size:10 (module String)
+      ; record_names = Hashtbl.create ~growth_allowed:true ~size:10 (module LLVMType)
+      ; union_types = Hashtbl.create ~growth_allowed:true ~size:10 (module LLVMType)
       }
   ; attrs = { inline = Llvm.create_enum_attr c "alwaysinline" 0L }
   }
@@ -81,7 +96,7 @@ let predeclare_stdlib (c : context_t) (m : Llvm.llmodule) : unit =
     ignore (Llvm.declare_function name (Llvm.function_type rt args) m)
   in
   List.iter
-    (fun (name, args, rt) -> predeclare name args rt)
+    ~f:(fun (name, args, rt) -> predeclare name args rt)
     [ "read_int", [||], c.types.int
     ; "read_bool", [||], c.types.bool
     ; "read_float", [||], c.types.float
@@ -99,14 +114,16 @@ let rec generate_module_predecl (c : context_t) (m : Llvm.llmodule) (ds : g_decl
   =
   predeclare_stdlib c m;
   Llvm.set_target_triple (Llvm_target.Target.default_triple ()) m;
-  List.iter (generate_g_predecl c m) ds
+  List.iter ~f:(generate_g_predecl c m) ds
 
 and generate_module (c : context_t) (m : Llvm.llmodule) (ds : g_decl_t list) : unit =
-  List.iter (generate_g_decl c m) ds;
+  List.iter ~f:(generate_g_decl c m) ds;
   match Llvm.lookup_function "malloc" m with
   | None -> ()
   | Some malloc ->
-    Llvm.replace_all_uses_with malloc (Llvm.lookup_function "GC_malloc" m |> Option.get);
+    Llvm.replace_all_uses_with
+      malloc
+      (Llvm.lookup_function "GC_malloc" m |> fun s -> Option.value_exn s);
     (match Llvm_analysis.verify_module m with
     | None -> ()
     | Some error -> Errors.LLVMError error |> raise)
@@ -120,7 +137,7 @@ and generate_generic_funpredecl
     : Llvm.llvalue
   =
   let arg_types =
-    args |> List.map (fun tid -> tid |> snd |> get_llvm_t c) |> Array.of_list
+    args |> List.map ~f:(fun tid -> tid |> snd |> get_llvm_t c) |> Array.of_list
   in
   let r_type = get_llvm_t c result in
   let f_t = Llvm.function_type r_type arg_types in
@@ -135,11 +152,11 @@ and generate_generic_fundecl
     (body : expr_t)
   =
   List.iter
-    (fun ((name, type_), arg) ->
+    ~f:(fun ((name, type_), arg) ->
       Llvm.set_value_name name arg;
       match type_ with
-      | FunT _ -> Hashtbl.add c.namespace.functions name arg
-      | _ -> Hashtbl.add c.namespace.values name arg)
+      | FunT _ -> Hashtbl.set c.namespace.functions ~key:name ~data:arg
+      | _ -> Hashtbl.set c.namespace.values ~key:name ~data:arg)
     (zip args (Array.to_list (Llvm.params f)));
   let bb = Llvm.append_block c.c "entry" f in
   Llvm.position_at_end bb c.b;
@@ -153,10 +170,10 @@ and generate_generic_fundecl
       c.is_local <- false;
       result)
   in
-  c.parent_name <- List.tl c.parent_name;
+  c.parent_name <- (c.parent_name |> List.tl |> fun s -> Option.value_exn s);
   ignore (Llvm.build_ret llvm_body c.b);
   List.iter
-    (fun (name, type_) ->
+    ~f:(fun (name, type_) ->
       match type_ with
       | FunT _ -> Hashtbl.remove c.namespace.functions name
       | _ -> Hashtbl.remove c.namespace.values name)
@@ -169,7 +186,7 @@ and generate_g_predecl (c : context_t) (m : Llvm.llmodule) (d : g_decl_t) : unit
       : unit
     =
     let f = generate_generic_funpredecl c m name args result in
-    Hashtbl.add c.namespace.functions name f
+    Hashtbl.set c.namespace.functions ~key:name ~data:f
   in
   (* val *)
   let generate_g_valpredecl (name : id_t) (type_ : type_t) (expr : expr_t) : unit =
@@ -184,22 +201,27 @@ and generate_g_predecl (c : context_t) (m : Llvm.llmodule) (d : g_decl_t) : unit
   (* type *)
   let generate_g_typepredecl (name : id_t) type_ =
     let s = Llvm.named_struct_type c.c name in
-    Hashtbl.add c.namespace.types name s;
+    Hashtbl.set c.namespace.types ~key:name ~data:s;
     match type_ with
     | Alias _ -> ()
     | Record types ->
       let llvm_types =
-        types |> List.map snd |> List.map (get_llvm_t c) |> Array.of_list
+        types |> List.map ~f:snd |> List.map ~f:(get_llvm_t c) |> Array.of_list
       in
       Llvm.struct_set_body s llvm_types false;
-      Hashtbl.add c.namespace.record_names s (types |> List.map fst)
+      Hashtbl.set c.namespace.record_names ~key:s ~data:(types |> List.map ~f:fst)
     | Union types ->
-      let llvm_types = types |> List.map (get_llvm_t c) in
-      Llvm.struct_set_body s [| Llvm.i16_type c.c; llvm_types |> List.hd |] false;
-      Hashtbl.add
-        c.namespace.union_types
+      let llvm_types = types |> List.map ~f:(get_llvm_t c) in
+      Llvm.struct_set_body
         s
-        (llvm_types |> List.mapi (fun i t -> Llvm.const_int (Llvm.i16_type c.c) i, t))
+        [| Llvm.i16_type c.c; (llvm_types |> List.hd |> fun s -> Option.value_exn s) |]
+        false;
+      Hashtbl.set
+        c.namespace.union_types
+        ~key:s
+        ~data:
+          (llvm_types |> List.mapi ~f:(fun i t -> Llvm.const_int (Llvm.i16_type c.c) i, t))
+      |> ignore
   in
   (* main *)
   match d with
@@ -229,7 +251,7 @@ and generate_g_decl (c : context_t) (m : Llvm.llmodule) (d : g_decl_t) : unit =
     (*
     let f = generate_generic_funpredecl c m name args result in
        *)
-    let f = Hashtbl.find c.namespace.functions name in
+    let f = Hashtbl.find c.namespace.functions name |> fun s -> Option.value_exn s in
     ignore (generate_generic_fundecl c m f name args body)
   in
   (* main *)
@@ -295,16 +317,23 @@ and generate_if
   (* return *)
   phi
 
-and generate_case (c : context_t) (m : Llvm.llmodule) (expr : expr_t) (_pms : pm_t list)
+and generate_case (_ : context_t) (_ : Llvm.llmodule) (_ : expr_t) (_ : pm_t list)
     : Llvm.llvalue
   =
+  failwith "Not implemented"
+(*
   let v = generate_expr c m expr in
   let t = v |> Llvm.type_of |> Llvm.element_type in
-  let union_types = Hashtbl.find c.namespace.union_types t in
+  let union_types =
+    Hashtbl.find c.namespace.union_types t |> fun s -> Option.value_exn s
+  in
   let union_tag = Llvm.build_struct_gep v 0 "geptag" c.b in
-  let _pattern = union_types |> List.find (fun (tag, _) -> tag = union_tag) |> snd in
+  let _pattern =
+    union_types
+    |> List.find ~f:(fun (tag, _) -> tag = union_tag)
+    |> fun s -> Option.value_exn s |> snd
+  in
   failwith "a"
-(*
   let m = pms |> List.find (fun (p, _) -> pattern = get_llvm_t c p) |> snd in
   generate_expr c m
      *)
@@ -316,23 +345,23 @@ and generate_let (c : context_t) (m : Llvm.llmodule) (decls : decl_t list) (expr
   let predeclare (d : decl_t) : unit =
     match d with
     | FunDecl (name, ts, rt, _) ->
-      Hashtbl.add
+      Hashtbl.set
         c.namespace.functions
-        name
-        (generate_generic_funpredecl c m (get_local_name c name) ts rt)
+        ~key:name
+        ~data:(generate_generic_funpredecl c m (get_local_name c name) ts rt)
     | ValDecl _ -> ()
   in
   (* declare *)
   let declare (d : decl_t) : unit =
     match d with
     | ValDecl ((name, _), expr) ->
-      Hashtbl.add c.namespace.values name (generate_expr c m expr)
+      Hashtbl.set c.namespace.values ~key:name ~data:(generate_expr c m expr)
     | FunDecl (name, args, _, body) ->
       ignore
         (generate_generic_fundecl
            c
            m
-           (Hashtbl.find c.namespace.functions name)
+           (Hashtbl.find c.namespace.functions name |> fun s -> Option.value_exn s)
            name
            args
            body)
@@ -345,11 +374,11 @@ and generate_let (c : context_t) (m : Llvm.llmodule) (decls : decl_t list) (expr
   in
   (* main *)
   let let_bb = Llvm.insertion_block c.b in
-  List.iter predeclare decls;
-  List.iter declare decls;
+  List.iter ~f:predeclare decls;
+  List.iter ~f:declare decls;
   Llvm.position_at_end let_bb c.b;
   let llvm_expr = generate_expr c m expr in
-  List.iter remove_decl decls;
+  List.iter ~f:remove_decl decls;
   llvm_expr
 
 and generate_binop
@@ -405,11 +434,11 @@ and generate_binop
     | _ -> failwith "bool binop error"
   in
   (* main *)
-  if lt = c.types.int
+  if phys_equal lt c.types.int
   then generate_int_binop lh_value op rh_value
-  else if lt = c.types.bool
+  else if phys_equal lt c.types.bool
   then generate_bool_binop lh_value op rh_value
-  else if lt = c.types.float
+  else if phys_equal lt c.types.float
   then generate_float_binop lh_value op rh_value
   else
     failwith
@@ -445,7 +474,7 @@ and generate_getop (c : context_t) (m : Llvm.llmodule) (expr : expr_t) (i : int)
     t
     |> Llvm.struct_element_types
     |> Array.to_list
-    |> fun l -> List.nth l i |> Llvm.classify_type
+    |> fun l -> List.nth l i |> fun s -> Option.value_exn s |> Llvm.classify_type
   with
   | Llvm.TypeKind.Struct | Llvm.TypeKind.Function -> ptr
   | _ -> Llvm.build_load ptr "load" c.b
@@ -455,14 +484,14 @@ and generate_namedgetop (c : context_t) (m : Llvm.llmodule) (expr : expr_t) (nam
   =
   let s = generate_expr c m expr in
   let t = s |> Llvm.type_of |> Llvm.element_type in
-  let names = Hashtbl.find c.namespace.record_names t in
+  let names = Hashtbl.find c.namespace.record_names t |> fun s -> Option.value_exn s in
   let i = names |> Misc.find_index name in
   let ptr = Llvm.build_struct_gep s i "gep" c.b in
   match
     t
     |> Llvm.struct_element_types
     |> Array.to_list
-    |> fun l -> List.nth l i |> Llvm.classify_type
+    |> fun l -> List.nth l i |> fun s -> Option.value_exn s |> Llvm.classify_type
   with
   | Llvm.TypeKind.Struct | Llvm.TypeKind.Function -> ptr
   | _ -> Llvm.build_load ptr "load" c.b
@@ -474,16 +503,15 @@ and generate_val (c : context_t) (m : Llvm.llmodule) (name : id_t) =
     (match Llvm.lookup_function (global_name ^ name) m with
     | Some g -> Llvm.build_call g [||] "globalvalue" c.b
     | None ->
-      let opt_v = Hashtbl.find_opt c.namespace.values name in
-      if Option.is_some opt_v
-      then Option.get opt_v
-      else (
-        match Llvm.lookup_function name m with
+      (match Hashtbl.find c.namespace.values name with
+      | Some v -> v
+      | None ->
+        (match Llvm.lookup_function name m with
         | Some f -> f
         | None ->
-          (match Hashtbl.find_opt c.namespace.functions name with
+          (match Hashtbl.find c.namespace.functions name with
           | Some f -> f
-          | None -> raise Not_found)))
+          | None -> failwith "Val not found"))))
 
 and generate_fun (c : context_t) (m : Llvm.llmodule) (expr : expr_t) (args : expr_t list)
     : Llvm.llvalue
@@ -496,16 +524,16 @@ and generate_fun (c : context_t) (m : Llvm.llmodule) (expr : expr_t) (args : exp
     | None -> Hashtbl.find c.namespace.functions name
   in
      *)
-  let llvm_args = Array.of_list (List.map (generate_expr c m) args) in
+  let llvm_args = Array.of_list (List.map ~f:(generate_expr c m) args) in
   Llvm.build_call f llvm_args "callexpr" c.b
 
 and generate_lit (c : context_t) (m : Llvm.llmodule) (lit : lit_t) : Llvm.llvalue =
   let generate_string s = Llvm.build_global_stringptr s "string" c.b in
   let generate_struct (id : id_t) (vals : expr_t list) : Llvm.llvalue =
-    let t = Hashtbl.find c.namespace.types id in
+    let t = Hashtbl.find c.namespace.types id |> fun s -> Option.value_exn s in
     let s = Llvm.build_malloc t "malloc" c.b in
     List.iteri
-      (fun i val_ ->
+      ~f:(fun i val_ ->
         let val_ = generate_expr c m val_ in
         let p = Llvm.build_struct_gep s i "gep" c.b in
         ignore (Llvm.build_store val_ p c.b))
@@ -513,11 +541,11 @@ and generate_lit (c : context_t) (m : Llvm.llmodule) (lit : lit_t) : Llvm.llvalu
     s
   in
   let generate_namedstruct (id : id_t) (named_vals : named_expr_t list) : Llvm.llvalue =
-    let t = Hashtbl.find c.namespace.types id in
-    let names = Hashtbl.find c.namespace.record_names t in
+    let t = Hashtbl.find c.namespace.types id |> fun s -> Option.value_exn s in
+    let names = Hashtbl.find c.namespace.record_names t |> fun s -> Option.value_exn s in
     let s = Llvm.build_malloc t "malloc" c.b in
     List.iter
-      (fun (name, expr) ->
+      ~f:(fun (name, expr) ->
         let v = generate_expr c m expr in
         let i = Misc.find_index name names in
         let p = Llvm.build_struct_gep s i "gep" c.b in
